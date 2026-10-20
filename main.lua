@@ -274,30 +274,147 @@ function client.draw() -- Rendering
         end
     end
 
+    -- if menu then
+    --     UiMakeInteractive()
+
+    --     UiTranslate(UiCenter(), UiMiddle())
+    --     UiAlign("center middle")
+
+    --     UiPush()
+    --         UiBackgroundBlur(1.0)
+    --         UiColor(0, 0, 0, 0.6)
+    --         UiAlign("center middle")
+    --         UiRect(1000, 500)
+    --     UiPop()
+
+    --     UiPush()
+
+    --         UiFont("bold.ttf", 24)
+
+    --         UiTranslate(-400, -150)
+    --             if UiImageButton("/media/button_line.png") then
+    --                 mode = "line"
+    --             end
+
+    --         UiPush()
+    --             UiTranslate(800, 0)
+    --             if UiImageButton("/media/clear.png") then
+    --                 measurements = {} -- Clear all measurements
+    --             end
+    --             UiPush()
+    --                 UiTranslate(0, 80)
+    --                 UiText("Clear all")
+    --             UiPop()
+
+    --             UiTranslate(0, 300)
+    --             if UiImageButton("/media/revert.png") then
+    --                 table.remove(measurements, #measurements) -- Remove last measurement
+    --             end
+    --             UiPush()
+    --                 UiTranslate(0, 80)
+    --                 UiText("Clear last")
+    --             UiPop()
+
+    --             UiTranslate(0, 300)
+    --             if UiImageButton("/media/revert.png") then
+    --                 table.remove(measurements, #measurements) -- Remove last measurement
+    --             end
+    --             UiPush()
+    --                 UiTranslate(0, 80)
+    --                 UiText("Clear last")
+    --             UiPop()
+
+    --         UiPop()
+    --         UiPush()
+    --             UiTranslate(0, 80)
+    --             UiText("Line")
+    --         UiPop()
+
+    --             UiTranslate(200, 0)
+    --             if UiImageButton("/media/button_rect.png") then
+    --                 mode = "rect"
+    --             end
+
+    --         UiPush()
+    --             UiTranslate(0, 80)
+    --             UiText("Rectangular")
+    --         UiPop()
+
+    --     UiPop()
+    -- end
+
     if menu then
+        BUTTON_SIZE = 128
+        BUTTON_SPACING_HORIZONTAL = 50
+        BUTTON_SPACING_VERTICAL = 50
+
+        HORI_BUTTONS = 5
+        VERT_BUTTONS = 2
+
+        MENU_WIDTH = HORI_BUTTONS * BUTTON_SIZE + (HORI_BUTTONS+1) * BUTTON_SPACING_HORIZONTAL
+        MENU_HEIGHT = 500
+
         UiMakeInteractive()
 
         UiTranslate(UiCenter(), UiMiddle())
         UiAlign("center middle")
+        UiFont("bold.ttf", 24)
+        UiAlign("center middle")
+        UiBackgroundBlur(1.0)
 
         UiPush()
-            UiBackgroundBlur(1.0)
             UiColor(0, 0, 0, 0.6)
-            UiAlign("center middle")
-            UiRect(1000, 500)
+            UiRect(MENU_WIDTH, MENU_HEIGHT)
         UiPop()
 
         UiPush()
+            UiTranslate(-MENU_WIDTH/2 + BUTTON_SIZE/2 + BUTTON_SPACING_HORIZONTAL, -MENU_HEIGHT/2 + BUTTON_SIZE/2 + BUTTON_SPACING_VERTICAL) -- First row
 
-            UiFont("bold.ttf", 24)
-
-            UiTranslate(-400, -150)
+            UiPush() -- Line mode
                 if UiImageButton("/media/button_line.png") then
                     mode = "line"
                 end
+                UiPush()
+                    UiTranslate(0, 80)
+                    UiText("Line")
+                UiPop()
+            UiPop()
 
-            UiPush()
-                UiTranslate(800, 0)
+            UiPush() -- Rectangular mode
+                UiTranslate(BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)
+                if UiImageButton("/media/button_rect.png") then
+                    mode = "rect"
+                end
+                UiPush()
+                    UiTranslate(0, 80)
+                    UiText("Rectangular")
+                UiPop()
+            UiPop()
+
+            -- UiPush() -- Button 3
+            --     UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*2)
+            --     if UiImageButton("/media/button_line.png") then
+            --         DebugPrint("Button 3")
+            --     end
+            --     UiPush()
+            --         UiTranslate(0, 80)
+            --         UiText("Button 3")
+            --     UiPop()
+            -- UiPop()
+
+            -- UiPush() -- Button 4
+            --     UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*3)
+            --     if UiImageButton("/media/button_line.png") then
+            --         DebugPrint("Button 4")
+            --     end
+            --     UiPush()
+            --         UiTranslate(0, 80)
+            --         UiText("Button 4")
+            --     UiPop()
+            -- UiPop()
+
+            UiPush() -- Clear all
+                UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*4)
                 if UiImageButton("/media/clear.png") then
                     measurements = {} -- Clear all measurements
                 end
@@ -305,32 +422,64 @@ function client.draw() -- Rendering
                     UiTranslate(0, 80)
                     UiText("Clear all")
                 UiPop()
+            UiPop()
 
-                UiTranslate(0, 300)
-                if UiImageButton("/media/revert.png") then
-                    table.remove(measurements, #measurements) -- Remove last measurement
-                end
-                UiPush()
-                    UiTranslate(0, 80)
-                    UiText("Clear last")
+            UiPush() -- Second row
+                UiTranslate(0, BUTTON_SPACING_VERTICAL*2 + BUTTON_SIZE)
+                
+                --     UiPush() -- Button 5
+                --     if UiImageButton("/media/button_line.png") then
+                --         DebugPrint("Button 6")
+                --     end
+                --     UiPush()
+                --         UiTranslate(0, 80)
+                --         UiText("Button 6")
+                --     UiPop()
+                -- UiPop()
+
+                -- UiPush() -- Button 6
+                --     UiTranslate(BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)
+                --     if UiImageButton("/media/button_line.png") then
+                --         DebugPrint("Button 6")
+                --     end
+                --     UiPush()
+                --         UiTranslate(0, 80)
+                --         UiText("Button 6")
+                --     UiPop()
+                -- UiPop()
+
+                -- UiPush() -- Button 7
+                --     UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*2)
+                --     if UiImageButton("/media/button_line.png") then
+                --         DebugPrint("Button 7")
+                --     end
+                --     UiPush()
+                --         UiTranslate(0, 80)
+                --         UiText("Button 7")
+                --     UiPop()
+                -- UiPop()
+
+                -- UiPush() -- Settings [WIP]
+                --     UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*3)
+                --     if UiImageButton("/media/settings.png") then
+                --         DebugPrint("settings")
+                --     end
+                --     UiPush()
+                --         UiTranslate(0, 80)
+                --         UiText("Settings")
+                --     UiPop()
+                -- UiPop()
+
+                UiPush() -- Clear last
+                    UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*4)
+                    if UiImageButton("/media/revert.png") then
+                        table.remove(measurements, #measurements) -- Remove last measurement
+                    end
+                    UiPush()
+                        UiTranslate(0, 80)
+                        UiText("Clear last")
+                    UiPop()
                 UiPop()
-
-            UiPop()
-            UiPush()
-                UiTranslate(0, 80)
-                UiText("Line")
-            UiPop()
-
-                UiTranslate(200, 0)
-                if UiImageButton("/media/button_rect.png") then
-                    mode = "rect"
-                end
-
-            UiPush()
-                UiTranslate(0, 80)
-                UiText("Rectangular")
-            UiPop()
-
         UiPop()
     end
 end
