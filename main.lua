@@ -63,22 +63,30 @@ function round(value, decimals)
     end
 end
 
-function renderMeasurement(finished, i)
-    opacity = finished and 1 or 0.2
+function renderMeasurement(completed, i)
+    opacity = completed and 1 or 0.2
         
-    DebugCross(measurements[i].pos_a, 0, 1, 0, 1)
+    if measurements[i].type == "point" then
+        DebugCross(measurements[i].pos_a, 0, 1, 0, 1)
+    end
 
     if measurements[i].type == "line" then
         DebugLine(measurements[i].pos_a, measurements[i].pos_b, 1, 0, 0, opacity)
+
+        DebugCross(measurements[i].pos_a, 0, 1, 0, 1)
         DebugCross(measurements[i].pos_b, 0, 0, 1, opacity)
+        DebugCross(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))
     end
 
     if measurements[i].type == "rect" then
 
+        DebugCross(measurements[i].pos_a, 0, 1, 0, 1)
         DebugCross(blevel, 0, 0, 1, 1)
 
         DebugCross(aprim, 0, 1, 1) -- cyan
         DebugCross(bprim, 1, 1, 0) -- yellow
+        
+        DebugCross(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))
 
         if orientation == "horizontal" then
             DebugLine(measurements[i].pos_a, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
@@ -93,11 +101,40 @@ function renderMeasurement(finished, i)
             DebugLine(measurements[i].pos_a, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
 
             DebugLine(measurements[i].pos_b, aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-                DebugLine(measurements[i].pos_b, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+            DebugLine(measurements[i].pos_b, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
 
             DebugCross(measurements[i].pos_b, 0, 0, 1, 1)
         end
     end
+
+    if measurements[i].type == "cprect" then
+
+        DebugCross(measurements[i].pos_a, 1, 1, 1, 1)
+
+        DebugCross(aprim, 0, 1, 1) -- cyan
+        DebugCross(bprim, 1, 1, 0) -- yellow
+
+        DebugCross(bmirror, 1, 0, 1) -- yellow
+
+        if orientation == "horizontal" then
+            DebugLine(bmirror, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
+            DebugLine(bmirror, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
+
+            DebugLine(blevel, aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
+            DebugLine(blevel, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+
+            DebugCross(blevel, 0, 0, 1, 1)
+        else
+            DebugLine(bmirror, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
+            DebugLine(bmirror, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
+
+            DebugLine(measurements[i].pos_b, aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
+            DebugLine(measurements[i].pos_b, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+
+            DebugCross(measurements[i].pos_b, 0, 0, 1, 1)
+        end
+    end
+
 end
 
 
@@ -195,26 +232,43 @@ function client.draw() -- Rendering
         local dominantDelta = maxName { deltaX, deltaY, deltaZ }
         -- DebugPrint(dominantDelta)
 
+        blevel = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b but with the y coordinate of a (same level)
+        bmirror = VecLerp(measurements[i].pos_a, measurements[i].pos_b, -1) -- b mirrored to a
+
         if (dominantDelta[1] == "deltaX" and dominantDelta[2] == "deltaZ") or (dominantDelta[1] == "deltaZ" and dominantDelta[2] == "deltaX") then
-            aprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3]) -- a'(xb, ya, za)
-            bprim = Vec(measurements[i].pos_a[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
-
-            blevel = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b but with the y coordinate of a (same level)
-
+            if measurements[i].type == "cprect" then
+                aprim = Vec(measurements[i].pos_b[1], bmirror[2], bmirror[3]) -- a'(xb, ya, za)
+                bprim = Vec(bmirror[1], bmirror[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
+            else
+                aprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3]) -- a'(xb, ya, za)
+                bprim = Vec(measurements[i].pos_a[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
+            end
             orientation = "horizontal"
         else
-            aprim = Vec(measurements[i].pos_a[1], measurements[i].pos_b[2], measurements[i].pos_a[3]) -- a'(xb, ya, za)
-            bprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
-
-            blevel = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b but with the y coordinate of a (same level)
-            
+            if measurements[i].type == "cprect" then
+                aprim = Vec(bmirror[1], measurements[i].pos_b[2], bmirror[3]) -- a'(xb, ya, za)
+                bprim = Vec(measurements[i].pos_b[1], bmirror[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
+            else
+                aprim = Vec(measurements[i].pos_a[1], measurements[i].pos_b[2], measurements[i].pos_a[3]) -- a'(xb, ya, za)
+                bprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
+            end
             orientation = "vertical"
         end
 
-        dimensionx = VecLength(VecSub(measurements[i].pos_a, bprim))
-        dimensiony = VecLength(VecSub(measurements[i].pos_a, aprim))
+        if measurements[i].type == "cprect" then
+            dimensionx = VecLength(VecSub(bmirror, bprim))
+            dimensiony = VecLength(VecSub(bmirror, aprim))
+        else
+            dimensionx = VecLength(VecSub(measurements[i].pos_a, bprim))
+            dimensiony = VecLength(VecSub(measurements[i].pos_a, aprim))
+        end
         
-        uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5)) -- Get the position of the text in the middle of the line
+        if measurements[i].type == "cprect" then
+            uiX, uiY, UIdist = UiWorldToPixel(measurements[i].pos_a) -- Get the position of the text in the middle of the line [for cprect]
+        else
+            uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5)) -- Get the position of the text in the middle of the line
+        end
+        
 
         if measurements[i].type == "rect" then
             if orientation == "horizontal" then
@@ -226,12 +280,14 @@ function client.draw() -- Rendering
         
         renderMeasurement(measurements[i].set_b, i)
 
+        -- DebugCross(VecLerp(measurements[i].pos_a, measurements[i].pos_b, -1))
+
         if UIdist > 0 and measurements[i].set_a and measurements[i].length < maxDist then -- Measurement length label
             if (not measurements[i].set_b and dist < maxDist) or measurements[i].set_b then
                 UiPush()
                     UiFont("bold.ttf", 24)
                     UiAlign("center middle")
-                    UiTranslate(uiX, uiY)
+                    UiTranslate(uiX, uiY-15)
                     if measurements[i].set_b then
                         UiColor(1,1,1,1)
                         UiTextOutline(0,0,0,5)
@@ -243,7 +299,7 @@ function client.draw() -- Rendering
                        UiText(string.format("%.2f m", measurements[i].length))  
                     end
                     -- DebugPrint(measurements[i].type)
-                    if measurements[i].type == "rect" then
+                    if measurements[i].type == "rect" or measurements[i].type == "cprect" then
                        UiText(string.format("%.2f m x %.2f m", dimensionx, dimensiony))
                     end
                               
@@ -350,7 +406,7 @@ function client.draw() -- Rendering
                 UiPush() -- Button 6
                     UiTranslate(BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)
                     if UiImageButton("/media/button_cprect.png") then
-                        DebugPrint("Center Point Rectangular")
+                        mode = "cprect"
                     end
                     UiPush()
                         UiTranslate(0, 80)
