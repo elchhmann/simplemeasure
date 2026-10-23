@@ -86,6 +86,7 @@ function renderMeasurement(completed, i)
         DebugCross(aprim, 0, 1, 1) -- cyan
         DebugCross(bprim, 1, 1, 0) -- yellow
         
+        
         DebugCross(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))
 
         if orientation == "horizontal" then
@@ -96,6 +97,9 @@ function renderMeasurement(completed, i)
             DebugLine(blevel, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
 
             DebugCross(blevel, 0, 0, 1, 1)
+
+            DebugLine(measurements[i].pos_a, blevel, 1, 1, 1, 0.1) -- diagonal a to b
+            DebugLine(aprim, bprim, 1, 1, 1, 0.1) --  -- diagonal a' to b'
         else
             DebugLine(measurements[i].pos_a, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
             DebugLine(measurements[i].pos_a, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
@@ -104,6 +108,9 @@ function renderMeasurement(completed, i)
             DebugLine(measurements[i].pos_b, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
 
             DebugCross(measurements[i].pos_b, 0, 0, 1, 1)
+
+            DebugLine(measurements[i].pos_a, measurements[i].pos_b, 1, 1, 1, 0.1) -- diagonal a to b
+            DebugLine(aprim, bprim, 1, 1, 1, 0.1) -- diagonal a' to b'
         end
     end
 
@@ -114,24 +121,30 @@ function renderMeasurement(completed, i)
         DebugCross(aprim, 0, 1, 1) -- cyan
         DebugCross(bprim, 1, 1, 0) -- yellow
 
-        DebugCross(bmirror, 1, 0, 1) -- yellow
+        DebugCross(binv, 1, 0, 1) -- yellow
 
         if orientation == "horizontal" then
-            DebugLine(bmirror, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
-            DebugLine(bmirror, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
+            DebugLine(binv, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
+            DebugLine(binv, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
 
             DebugLine(blevel, aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
             DebugLine(blevel, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
 
             DebugCross(blevel, 0, 0, 1, 1)
+
+            DebugLine(binv, blevel, 1, 1, 1, 0.1) -- diagonal b^-1 to b
+            DebugLine(aprim, bprim, 1, 1, 1, 0.1) --  -- diagonal a' to b'
         else
-            DebugLine(bmirror, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
-            DebugLine(bmirror, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
+            DebugLine(binv, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
+            DebugLine(binv, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
 
             DebugLine(measurements[i].pos_b, aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
             DebugLine(measurements[i].pos_b, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
 
             DebugCross(measurements[i].pos_b, 0, 0, 1, 1)
+
+            DebugLine(binv, blevel, 1, 1, 1, 0.1) -- diagonal b^-1 to b
+            DebugLine(aprim, bprim, 1, 1, 1, 0.1) --  -- diagonal a' to b'
         end
     end
 
@@ -233,12 +246,12 @@ function client.draw() -- Rendering
         -- DebugPrint(dominantDelta)
 
         blevel = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b but with the y coordinate of a (same level)
-        bmirror = VecLerp(measurements[i].pos_a, measurements[i].pos_b, -1) -- b mirrored to a
+        binv = VecLerp(measurements[i].pos_a, measurements[i].pos_b, -1) -- b mirrored to a
 
         if (dominantDelta[1] == "deltaX" and dominantDelta[2] == "deltaZ") or (dominantDelta[1] == "deltaZ" and dominantDelta[2] == "deltaX") then
             if measurements[i].type == "cprect" then
-                aprim = Vec(measurements[i].pos_b[1], bmirror[2], bmirror[3]) -- a'(xb, ya, za)
-                bprim = Vec(bmirror[1], bmirror[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
+                aprim = Vec(measurements[i].pos_b[1], binv[2], binv[3]) -- a'(xb, ya, za)
+                bprim = Vec(binv[1], binv[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
             else
                 aprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3]) -- a'(xb, ya, za)
                 bprim = Vec(measurements[i].pos_a[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
@@ -246,8 +259,8 @@ function client.draw() -- Rendering
             orientation = "horizontal"
         else
             if measurements[i].type == "cprect" then
-                aprim = Vec(bmirror[1], measurements[i].pos_b[2], bmirror[3]) -- a'(xb, ya, za)
-                bprim = Vec(measurements[i].pos_b[1], bmirror[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
+                aprim = Vec(binv[1], measurements[i].pos_b[2], binv[3]) -- a'(xb, ya, za)
+                bprim = Vec(measurements[i].pos_b[1], binv[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
             else
                 aprim = Vec(measurements[i].pos_a[1], measurements[i].pos_b[2], measurements[i].pos_a[3]) -- a'(xb, ya, za)
                 bprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
@@ -256,8 +269,8 @@ function client.draw() -- Rendering
         end
 
         if measurements[i].type == "cprect" then
-            dimensionx = VecLength(VecSub(bmirror, bprim))
-            dimensiony = VecLength(VecSub(bmirror, aprim))
+            dimensionx = VecLength(VecSub(binv, bprim))
+            dimensiony = VecLength(VecSub(binv, aprim))
         else
             dimensionx = VecLength(VecSub(measurements[i].pos_a, bprim))
             dimensiony = VecLength(VecSub(measurements[i].pos_a, aprim))
