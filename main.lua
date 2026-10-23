@@ -63,6 +63,44 @@ function round(value, decimals)
     end
 end
 
+function renderMeasurement(finished, i)
+    opacity = finished and 1 or 0.2
+        
+    DebugCross(measurements[i].pos_a, 0, 1, 0, 1)
+
+    if measurements[i].type == "line" then
+        DebugLine(measurements[i].pos_a, measurements[i].pos_b, 1, 0, 0, opacity)
+        DebugCross(measurements[i].pos_b, 0, 0, 1, opacity)
+    end
+
+    if measurements[i].type == "rect" then
+
+        DebugCross(blevel, 0, 0, 1, 1)
+
+        DebugCross(aprim, 0, 1, 1) -- cyan
+        DebugCross(bprim, 1, 1, 0) -- yellow
+
+        if orientation == "horizontal" then
+            DebugLine(measurements[i].pos_a, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
+            DebugLine(measurements[i].pos_a, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
+
+            DebugLine(blevel, aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
+            DebugLine(blevel, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+
+            DebugCross(blevel, 0, 0, 1, 1)
+        else
+            DebugLine(measurements[i].pos_a, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
+            DebugLine(measurements[i].pos_a, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
+
+            DebugLine(measurements[i].pos_b, aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
+                DebugLine(measurements[i].pos_b, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+
+            DebugCross(measurements[i].pos_b, 0, 0, 1, 1)
+        end
+    end
+end
+
+
 function client.init()
 
 end
@@ -176,42 +214,7 @@ function client.draw() -- Rendering
             end
         end
         
-        if  measurements[i].set_b then -- Final render of the measurements
-        
-            DebugCross(measurements[i].pos_a, 0, 1, 0, 1)
-
-            if measurements[i].type == "line" then
-                DebugLine(measurements[i].pos_a, measurements[i].pos_b, 1, 0, 0, 1)
-                DebugCross(measurements[i].pos_b, 0, 0, 1, 1)
-            end
-
-            if measurements[i].type == "rect" then
-
-                DebugCross(blevel, 0, 0, 1, 1)
-
-                DebugCross(aprim, 0, 1, 1) -- cyan
-                DebugCross(bprim, 1, 1, 0) -- yellow
-
-                if orientation == "horizontal" then
-                    DebugLine(measurements[i].pos_a, aprim, 1, 0, 0, 1) -- From a(xa, ya, za) to  a'(xb, ya, za)
-                    DebugLine(measurements[i].pos_a, bprim, 1, 0, 0, 1) -- From a(xa, ya, za) to  b'(xa, ya, zb)
-
-                    DebugLine(blevel, aprim, 1, 0, 0, 1) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-                    DebugLine(blevel, bprim, 1, 0, 0, 1) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
-
-                    DebugCross(blevel, 0, 0, 1, 1)
-                else
-                    DebugLine(measurements[i].pos_a, aprim, 1, 0, 0, 1) -- From a(xa, ya, za) to  a'(xb, ya, za)
-                    DebugLine(measurements[i].pos_a, bprim, 1, 0, 0, 1) -- From a(xa, ya, za) to  b'(xa, ya, zb)
-
-                    DebugLine(measurements[i].pos_b, aprim, 1, 0, 0, 1) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-                    DebugLine(measurements[i].pos_b, bprim, 1, 0, 0, 1) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
-
-                    DebugCross(measurements[i].pos_b, 0, 0, 1, 1)
-                end
-            end
-
-        end
+        renderMeasurement(measurements[i].set_b, i)
 
         if UIdist > 0 and measurements[i].set_a and measurements[i].length < maxDist then -- Measurement length label
             if (not measurements[i].set_b and dist < maxDist) or measurements[i].set_b then
@@ -237,42 +240,7 @@ function client.draw() -- Rendering
                 UiPop()
             end
         end
-        
-        if not measurements[i].set_b and measurements[i].set_a and dist < maxDist then -- Real-time render of the measurements
-        
-            DebugCross(measurements[i].pos_a, 0, 1, 0, 1)
 
-            if measurements[i].type == "line" then
-                DebugLine(measurements[i].pos_a, hitPosition, 1, 0.1, 0.1, 0.4)
-                DebugCross(hitPosition, 0, 0, 1, 1)
-            end
-
-            if measurements[i].type == "rect" then
-
-                
-
-                DebugCross(aprim, 0, 1, 1) -- cyan
-                DebugCross(bprim, 1, 1, 0) -- yellow
-
-                if orientation == "horizontal" then
-                    DebugLine(measurements[i].pos_a, aprim, 1, 0.1, 0.1, 0.4) -- From a(xa, ya, za) to  a'(xb, ya, za)
-                    DebugLine(measurements[i].pos_a, bprim, 1, 0.1, 0.1, 0.4) -- From a(xa, ya, za) to  b'(xa, ya, zb)
-
-                    DebugLine(blevel, aprim, 1, 0.1, 0.1, 0.4) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-                    DebugLine(blevel, bprim, 1, 0.1, 0.1, 0.4) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
-
-                    DebugCross(blevel, 0, 0, 1, 1)
-                else
-                    DebugLine(measurements[i].pos_a, aprim, 1, 0.1, 0.1, 0.4) -- From a(xa, ya, za) to  a'(xb, ya, za)
-                    DebugLine(measurements[i].pos_a, bprim, 1, 0.1, 0.1, 0.4) -- From a(xa, ya, za) to  b'(xa, ya, zb)
-
-                    DebugLine(measurements[i].pos_b, aprim, 1, 0.1, 0.1, 0.4) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-                    DebugLine(measurements[i].pos_b, bprim, 1, 0.1, 0.1, 0.4) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
-
-                    DebugCross(measurements[i].pos_b, 0, 0, 1, 1)
-                end
-            end
-        end
     end
 
     if menu then
@@ -359,26 +327,28 @@ function client.draw() -- Rendering
             UiPush() -- Second row
                 UiTranslate(0, BUTTON_SPACING_VERTICAL*2 + BUTTON_SIZE)
                 
-                --     UiPush() -- Button 5
-                --     if UiImageButton("/media/button_line.png") then
-                --         DebugPrint("Button 6")
-                --     end
-                --     UiPush()
-                --         UiTranslate(0, 80)
-                --         UiText("Button 6")
-                --     UiPop()
-                -- UiPop()
+                    UiPush() -- Button 5
+                    if UiImageButton("/media/button_line.png") then
+                        DebugPrint("point")
+                    end
+                    UiPush()
+                        UiTranslate(0, 80)
+                        UiText("Point")
+                    UiPop()
+                UiPop()
 
-                -- UiPush() -- Button 6
-                --     UiTranslate(BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)
-                --     if UiImageButton("/media/button_line.png") then
-                --         DebugPrint("Button 6")
-                --     end
-                --     UiPush()
-                --         UiTranslate(0, 80)
-                --         UiText("Button 6")
-                --     UiPop()
-                -- UiPop()
+                UiPush() -- Button 6
+                    UiTranslate(BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)
+                    if UiImageButton("/media/button_line.png") then
+                        DebugPrint("Center Point Rectangular")
+                    end
+                    UiPush()
+                        UiTranslate(0, 80)
+                        UiText("Center Point")
+                        UiTranslate(0, 25)
+                        UiText("Rectangular")
+                    UiPop()
+                UiPop()
 
                 -- UiPush() -- Button 7
                 --     UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*2)
