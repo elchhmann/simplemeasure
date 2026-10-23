@@ -140,13 +140,9 @@ function client.draw() -- Rendering
     
     for i = 1, #measurements do
 
-        
-
         deltaX = math.abs(measurements[i].pos_a[1] - measurements[i].pos_b[1])
         deltaY = math.abs(measurements[i].pos_a[2] - measurements[i].pos_b[2])
         deltaZ = math.abs(measurements[i].pos_a[3] - measurements[i].pos_b[3])
-
-        
 
         local dominantDelta = maxName { deltaX, deltaY, deltaZ }
         -- DebugPrint(dominantDelta)
@@ -166,9 +162,6 @@ function client.draw() -- Rendering
             
             orientation = "vertical"
         end
-
-
-        
 
         dimensionx = VecLength(VecSub(measurements[i].pos_a, bprim))
         dimensiony = VecLength(VecSub(measurements[i].pos_a, aprim))
@@ -205,12 +198,16 @@ function client.draw() -- Rendering
 
                     DebugLine(blevel, aprim, 1, 0, 0, 1) -- From b(xb, yb, zb) to  a'(xb, ya, za)
                     DebugLine(blevel, bprim, 1, 0, 0, 1) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+
+                    DebugCross(blevel, 0, 0, 1, 1)
                 else
                     DebugLine(measurements[i].pos_a, aprim, 1, 0, 0, 1) -- From a(xa, ya, za) to  a'(xb, ya, za)
                     DebugLine(measurements[i].pos_a, bprim, 1, 0, 0, 1) -- From a(xa, ya, za) to  b'(xa, ya, zb)
 
                     DebugLine(measurements[i].pos_b, aprim, 1, 0, 0, 1) -- From b(xb, yb, zb) to  a'(xb, ya, za)
                     DebugLine(measurements[i].pos_b, bprim, 1, 0, 0, 1) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+
+                    DebugCross(measurements[i].pos_b, 0, 0, 1, 1)
                 end
             end
 
@@ -252,7 +249,7 @@ function client.draw() -- Rendering
 
             if measurements[i].type == "rect" then
 
-                DebugCross(blevel, 0, 0, 1, 1)
+                
 
                 DebugCross(aprim, 0, 1, 1) -- cyan
                 DebugCross(bprim, 1, 1, 0) -- yellow
@@ -263,12 +260,16 @@ function client.draw() -- Rendering
 
                     DebugLine(blevel, aprim, 1, 0.1, 0.1, 0.4) -- From b(xb, yb, zb) to  a'(xb, ya, za)
                     DebugLine(blevel, bprim, 1, 0.1, 0.1, 0.4) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+
+                    DebugCross(blevel, 0, 0, 1, 1)
                 else
                     DebugLine(measurements[i].pos_a, aprim, 1, 0.1, 0.1, 0.4) -- From a(xa, ya, za) to  a'(xb, ya, za)
                     DebugLine(measurements[i].pos_a, bprim, 1, 0.1, 0.1, 0.4) -- From a(xa, ya, za) to  b'(xa, ya, zb)
 
                     DebugLine(measurements[i].pos_b, aprim, 1, 0.1, 0.1, 0.4) -- From b(xb, yb, zb) to  a'(xb, ya, za)
                     DebugLine(measurements[i].pos_b, bprim, 1, 0.1, 0.1, 0.4) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+
+                    DebugCross(measurements[i].pos_b, 0, 0, 1, 1)
                 end
             end
         end
