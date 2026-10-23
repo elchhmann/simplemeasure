@@ -135,27 +135,37 @@ function client.tick() -- Measurement math etc
         end
 
         if measurements[#measurements].set_b then -- Create a new measurement
-            table.insert(measurements, {
-                        pos_a = nil,
-                        set_a = false,
-                        pos_b = nil,
-                        set_b = false,
-                        length = nil,
-                        type = mode
-                    })
+                table.insert(measurements, {
+                            pos_a = nil,
+                            set_a = false,
+                            pos_b = nil,
+                            set_b = false,
+                            length = nil,
+                            type = mode
+                        })
         end
 
-        if not measurements[#measurements].set_b and measurements[#measurements].set_a and dist < maxDist then -- Second point of the measurement; create a new one
+        if measurements[#measurements].type == "point" then
+            measurements[#measurements].pos_a = hitPosition
             measurements[#measurements].pos_b = hitPosition
+            measurements[#measurements].set_a = true 
             measurements[#measurements].set_b = true
             measurements[#measurements].length = VecLength(VecSub(measurements[#measurements].pos_a, measurements[#measurements].pos_b))
-        end
+        else
 
-        if not measurements[#measurements].set_a and dist < maxDist then -- First point of the measurement
-            measurements[#measurements].pos_a = hitPosition
-            measurements[#measurements].set_a = true 
+            
+
+            if not measurements[#measurements].set_b and measurements[#measurements].set_a and dist < maxDist then -- Second point of the measurement; create a new one
+                measurements[#measurements].pos_b = hitPosition
+                measurements[#measurements].set_b = true
+                measurements[#measurements].length = VecLength(VecSub(measurements[#measurements].pos_a, measurements[#measurements].pos_b))
+            end
+
+            if not measurements[#measurements].set_a and dist < maxDist then -- First point of the measurement
+                measurements[#measurements].pos_a = hitPosition
+                measurements[#measurements].set_a = true 
+            end
         end
-        
     end
 
     if #measurements > 0 and measurements[#measurements].set_a and not measurements[#measurements].set_b then
@@ -327,9 +337,9 @@ function client.draw() -- Rendering
             UiPush() -- Second row
                 UiTranslate(0, BUTTON_SPACING_VERTICAL*2 + BUTTON_SIZE)
                 
-                    UiPush() -- Button 5
-                    if UiImageButton("/media/button_line.png") then
-                        DebugPrint("point")
+                    UiPush() -- Point
+                    if UiImageButton("/media/button_point.png") then
+                        mode = "point"
                     end
                     UiPush()
                         UiTranslate(0, 80)
@@ -339,7 +349,7 @@ function client.draw() -- Rendering
 
                 UiPush() -- Button 6
                     UiTranslate(BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)
-                    if UiImageButton("/media/button_line.png") then
+                    if UiImageButton("/media/button_cprect.png") then
                         DebugPrint("Center Point Rectangular")
                     end
                     UiPush()
