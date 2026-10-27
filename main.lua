@@ -1,37 +1,18 @@
-#version 2
-
 ---@diagnostic disable : undefined-global
 ---@diagnostic disable : lowercase-global
+---@diagnostic disable : exp-in-action
 
+#version 2
 
-KEY_NEW = "m"
-KEY_CANCEL = "rmb"
-KEY_MENU = ","
-KEY_SNAP = "shift"
+#include "scripts/renderMeasurements.lua"
+#include "scripts/renderLabels.lua"
+#include "scripts/mark.lua"
+#include "scripts/round.lua"
+#include "scripts/maxName.lua"
+#include "scripts/config.lua"
+#include "scripts/button.lua"
+#include "scripts/mark.lua"
 
-
-function maxName(deltas)
-    local copy = { }
-    local names = { "deltaX", "deltaY", "deltaZ" }
-    for _, v in ipairs(deltas) do table.insert(copy, v) end
-    
-    table.sort(copy, function (a, b) return a > b end)
-    
-    local result = { }
-    
-    for biggestKey, biggestValue in ipairs(copy) do
-        for index, value in pairs(deltas) do
-            if biggestValue == value then
-                table.insert(result, names[index])
-                break
-            end
-        end
-        
-        if #result == 2 then
-            return result
-        end
-    end
-end
 
 function avg(a, b)
     return ((a+b)/2)
@@ -43,117 +24,8 @@ menu = false
 
 mode = "line"
 
-measurements = {
-    pos_a = Vec(0, 0, 0),
-    set_a = false,
-    pos_b = Vec(0, 0, 0),
-    set_b = false,
-    length = nil,
-    type = nil
-}
+measurements = {}
 
-function round(value, decimals)
-    local factor = 10 ^ decimals
-    local scaled = value * factor
-
-    if scaled >= 0 then
-        return math.floor(scaled + 0.5) / factor
-    else
-        return math.ceil(scaled - 0.5) / factor
-    end
-end
-
-function renderMeasurement(completed, i)
-    opacity = completed and 1 or 0.2
-        
-    if measurements[i].type == "point" then
-        DebugCross(measurements[i].pos_a, 0, 1, 0, 1)
-    end
-
-    if measurements[i].type == "line" then
-        DebugLine(measurements[i].pos_a, measurements[i].pos_b, 1, 0, 0, opacity)
-
-        DebugCross(measurements[i].pos_a, 0, 1, 0, 1)
-        DebugCross(measurements[i].pos_b, 0, 0, 1, opacity)
-        DebugCross(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))
-    end
-
-    if measurements[i].type == "rect" then
-
-        DebugCross(measurements[i].pos_a, 0, 1, 0, 1)
-        DebugCross(blevel, 0, 0, 1, 1)
-
-        DebugCross(aprim, 0, 1, 1) -- cyan
-        DebugCross(bprim, 1, 1, 0) -- yellow
-        
-        
-        DebugCross(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))
-
-        if orientation == "horizontal" then
-            DebugLine(measurements[i].pos_a, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
-            DebugLine(measurements[i].pos_a, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
-
-            DebugLine(blevel, aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-            DebugLine(blevel, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
-
-            DebugCross(blevel, 0, 0, 1, 1)
-
-            DebugLine(measurements[i].pos_a, blevel, 1, 1, 1, 0.1) -- diagonal a to b
-            DebugLine(aprim, bprim, 1, 1, 1, 0.1) --  -- diagonal a' to b'
-        else
-            DebugLine(measurements[i].pos_a, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
-            DebugLine(measurements[i].pos_a, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
-
-            DebugLine(measurements[i].pos_b, aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-            DebugLine(measurements[i].pos_b, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
-
-            DebugCross(measurements[i].pos_b, 0, 0, 1, 1)
-
-            DebugLine(measurements[i].pos_a, measurements[i].pos_b, 1, 1, 1, 0.1) -- diagonal a to b
-            DebugLine(aprim, bprim, 1, 1, 1, 0.1) -- diagonal a' to b'
-        end
-    end
-
-    if measurements[i].type == "cprect" then
-
-        DebugCross(measurements[i].pos_a, 1, 1, 1, 1)
-
-        DebugCross(aprim, 0, 1, 1) -- cyan
-        DebugCross(bprim, 1, 1, 0) -- yellow
-
-        DebugCross(binv, 1, 0, 1) -- yellow
-
-        if orientation == "horizontal" then
-            DebugLine(binv, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
-            DebugLine(binv, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
-
-            DebugLine(blevel, aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-            DebugLine(blevel, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
-
-            DebugCross(blevel, 0, 0, 1, 1)
-
-            DebugLine(binv, blevel, 1, 1, 1, 0.1) -- diagonal b^-1 to b
-            DebugLine(aprim, bprim, 1, 1, 1, 0.1) --  -- diagonal a' to b'
-        else
-            DebugLine(binv, aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
-            DebugLine(binv, bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
-
-            DebugLine(measurements[i].pos_b, aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-            DebugLine(measurements[i].pos_b, bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
-
-            DebugCross(measurements[i].pos_b, 0, 0, 1, 1)
-
-            DebugLine(binv, blevel, 1, 1, 1, 0.1) -- diagonal b^-1 to b
-            DebugLine(aprim, bprim, 1, 1, 1, 0.1) --  -- diagonal a' to b'
-        end
-    end
-
-end
-
-
-function client.init()
-
-end
 
 function client.tick() -- Measurement math etc
     origin = GetCameraTransform().pos -- Position of the camera
@@ -231,8 +103,11 @@ function client.tick() -- Measurement math etc
             table.remove(measurements, #measurements)
         end
     end
-    
 end
+
+
+
+
 
 function client.draw() -- Rendering
     
@@ -268,70 +143,16 @@ function client.draw() -- Rendering
             orientation = "vertical"
         end
 
-        if measurements[i].type == "cprect" then
-            dimensionx = VecLength(VecSub(binv, bprim))
-            dimensiony = VecLength(VecSub(binv, aprim))
-        else
-            dimensionx = VecLength(VecSub(measurements[i].pos_a, bprim))
-            dimensiony = VecLength(VecSub(measurements[i].pos_a, aprim))
-        end
         
-        if measurements[i].type == "cprect" then
-            uiX, uiY, UIdist = UiWorldToPixel(measurements[i].pos_a) -- Get the position of the text in the middle of the line [for cprect]
-        else
-            uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5)) -- Get the position of the text in the middle of the line
-        end
         
+        renderMeasurements(measurements[i].set_b, i)
 
-        if measurements[i].type == "rect" then
-            if orientation == "horizontal" then
-                uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, blevel, 0.5)) -- Get the position of the text in the middle of the line
-            else
-                uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))
-            end
-        end
-        
-        renderMeasurement(measurements[i].set_b, i)
-
-        -- DebugCross(VecLerp(measurements[i].pos_a, measurements[i].pos_b, -1))
-
-        if UIdist > 0 and measurements[i].set_a and measurements[i].length < maxDist then -- Measurement length label
-            if (not measurements[i].set_b and dist < maxDist) or measurements[i].set_b then
-                UiPush()
-                    UiFont("bold.ttf", 24)
-                    UiAlign("center middle")
-                    UiTranslate(uiX, uiY-15)
-                    if measurements[i].set_b then
-                        UiColor(1,1,1,1)
-                        UiTextOutline(0,0,0,5)
-                    end
-                    if not measurements[i].set_b then
-                        UiColor(1,1,1,0.3)
-                    end
-                    if measurements[i].type == "line" then
-                       UiText(string.format("%.2f m", measurements[i].length))  
-                    end
-                    -- DebugPrint(measurements[i].type)
-                    if measurements[i].type == "rect" or measurements[i].type == "cprect" then
-                       UiText(string.format("%.2f m x %.2f m", dimensionx, dimensiony))
-                    end
-                              
-                UiPop()
-            end
-        end
+        renderLabels(i)
 
     end
 
     if menu then
-        BUTTON_SIZE = 128
-        BUTTON_SPACING_HORIZONTAL = 50
-        BUTTON_SPACING_VERTICAL = 50
-
-        HORI_BUTTONS = 5
-        VERT_BUTTONS = 2
-
-        MENU_WIDTH = HORI_BUTTONS * BUTTON_SIZE + (HORI_BUTTONS+1) * BUTTON_SPACING_HORIZONTAL
-        MENU_HEIGHT = 500
+        
 
         UiMakeInteractive()
 
@@ -349,118 +170,43 @@ function client.draw() -- Rendering
         UiPush()
             UiTranslate(-MENU_WIDTH/2 + BUTTON_SIZE/2 + BUTTON_SPACING_HORIZONTAL, -MENU_HEIGHT/2 + BUTTON_SIZE/2 + BUTTON_SPACING_VERTICAL) -- First row
 
-            UiPush() -- Line mode
-                if UiImageButton("/media/button_line.png") then
-                    mode = "line"
-                end
-                UiPush()
-                    UiTranslate(0, 80)
-                    UiText("Line")
-                UiPop()
-            UiPop()
+            button(1, 1, "/media/button_line.png", "Line", _, function()
+                mode = "line"
+            end)
 
-            UiPush() -- Rectangular mode
-                UiTranslate(BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)
-                if UiImageButton("/media/button_rect.png") then
-                    mode = "rect"
-                end
-                UiPush()
-                    UiTranslate(0, 80)
-                    UiText("Rectangular")
-                UiPop()
-            UiPop()
+            button(1, 2, "/media/button_rect.png", "Rectangular", _, function()
+                mode = "rect"
+            end)
 
-            -- UiPush() -- Button 3
-            --     UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*2)
-            --     if UiImageButton("/media/button_line.png") then
-            --         DebugPrint("Button 3")
-            --     end
-            --     UiPush()
-            --         UiTranslate(0, 80)
-            --         UiText("Button 3")
-            --     UiPop()
-            -- UiPop()
+            -- button(1, 4, "/media/button_rect.png", "Mark", _, function()
+            --     -- ServerCall("server.mark", measurements[i].pos_a, measurements[i].pos_b, 1, 1, 1, 1, i, 200)
+            --     ServerCall("server.mark")
+            --     DebugPrint("tried calling")
+            -- end)
 
-            -- UiPush() -- Button 4
-            --     UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*3)
-            --     if UiImageButton("/media/button_line.png") then
-            --         DebugPrint("Button 4")
-            --     end
-            --     UiPush()
-            --         UiTranslate(0, 80)
-            --         UiText("Button 4")
-            --     UiPop()
-            -- UiPop()
+            button(1, 5, "/media/clear.png", "Clear all", _, function()
+                measurements = {} -- Clear all measurements
+            end)
 
-            UiPush() -- Clear all
-                UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*4)
-                if UiImageButton("/media/clear.png") then
-                    measurements = {} -- Clear all measurements
-                end
-                UiPush()
-                    UiTranslate(0, 80)
-                    UiText("Clear all")
-                UiPop()
-            UiPop()
+            button(2, 1, "/media/button_point.png", "Point", _, function()
+                mode = "point"
+            end)
 
-            UiPush() -- Second row
-                UiTranslate(0, BUTTON_SPACING_VERTICAL*2 + BUTTON_SIZE)
-                
-                    UiPush() -- Point
-                    if UiImageButton("/media/button_point.png") then
-                        mode = "point"
-                    end
-                    UiPush()
-                        UiTranslate(0, 80)
-                        UiText("Point")
-                    UiPop()
-                UiPop()
+            button(2, 2, "/media/button_cprect.png", "Center Point", "Rectangular", function()
+                mode = "cprect"
+            end)
 
-                UiPush() -- Button 6
-                    UiTranslate(BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)
-                    if UiImageButton("/media/button_cprect.png") then
-                        mode = "cprect"
-                    end
-                    UiPush()
-                        UiTranslate(0, 80)
-                        UiText("Center Point")
-                        UiTranslate(0, 25)
-                        UiText("Rectangular")
-                    UiPop()
-                UiPop()
-
-                -- UiPush() -- Button 7
-                --     UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*2)
-                --     if UiImageButton("/media/button_line.png") then
-                --         DebugPrint("Button 7")
-                --     end
-                --     UiPush()
-                --         UiTranslate(0, 80)
-                --         UiText("Button 7")
-                --     UiPop()
-                -- UiPop()
-
-                -- UiPush() -- Settings [WIP]
-                --     UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*3)
-                --     if UiImageButton("/media/settings.png") then
-                --         DebugPrint("settings")
-                --     end
-                --     UiPush()
-                --         UiTranslate(0, 80)
-                --         UiText("Settings")
-                --     UiPop()
-                -- UiPop()
-
-                UiPush() -- Clear last
-                    UiTranslate((BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL)*4)
-                    if UiImageButton("/media/revert.png") then
-                        table.remove(measurements, #measurements) -- Remove last measurement
-                    end
-                    UiPush()
-                        UiTranslate(0, 80)
-                        UiText("Clear last")
-                    UiPop()
-                UiPop()
+            button(2, 5, "/media/revert.png", "Clear last", _, function()
+                table.remove(measurements, #measurements) -- Remove last measurement
+            end)
         UiPop()
     end
+end
+
+-- function server.mark()
+--     DebugPrint("call successful")
+-- end
+
+function server.tick()
+    DebugPrint()
 end
