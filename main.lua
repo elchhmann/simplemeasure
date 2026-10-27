@@ -1,8 +1,8 @@
+#version 2
+
 ---@diagnostic disable : undefined-global
 ---@diagnostic disable : lowercase-global
 ---@diagnostic disable : exp-in-action
-
-#version 2
 
 #include "scripts/renderMeasurements.lua"
 #include "scripts/renderLabels.lua"
@@ -11,7 +11,6 @@
 #include "scripts/maxName.lua"
 #include "scripts/config.lua"
 #include "scripts/button.lua"
-#include "scripts/mark.lua"
 
 
 function avg(a, b)
@@ -28,6 +27,7 @@ measurements = {}
 
 
 function client.tick() -- Measurement math etc
+    
     origin = GetCameraTransform().pos -- Position of the camera
     cameraDirection = TransformToParentVec(GetCameraTransform(), Vec(0, 0, -1)) -- Direction the camera is facing
     raycast, dist = QueryRaycast(origin, cameraDirection, maxDist) -- Raycast from the camera
@@ -178,11 +178,10 @@ function client.draw() -- Rendering
                 mode = "rect"
             end)
 
-            -- button(1, 4, "/media/button_rect.png", "Mark", _, function()
-            --     -- ServerCall("server.mark", measurements[i].pos_a, measurements[i].pos_b, 1, 1, 1, 1, i, 200)
-            --     ServerCall("server.mark")
-            --     DebugPrint("tried calling")
-            -- end)
+            button(1, 4, "/media/button_mark.png", "Mark", _, function()
+                local sm = measurements
+                ServerCall("server.mark", sm)
+            end)
 
             button(1, 5, "/media/clear.png", "Clear all", _, function()
                 measurements = {} -- Clear all measurements
@@ -203,10 +202,16 @@ function client.draw() -- Rendering
     end
 end
 
--- function server.mark()
---     DebugPrint("call successful")
--- end
-
-function server.tick()
-    DebugPrint()
+function server.mark(sm)
+    for i=1, #sm do
+        if sm[i].type == "line" then
+            mark(sm[i].pos_a, sm[i].pos_b, 0.1, 1, 1, 0, i, 200)
+        end
+    end
 end
+
+
+
+-- function server.tick()
+--     DebugPrint()
+-- end
