@@ -20,16 +20,14 @@ function renderMeasurements(completed, i)
 
     if measurements[i].type == "rect" then
 
-        DebugCross(measurements[i].pos_a, 0, 1, 0, 1)
-        DebugCross(measurements[i].blevel, 0, 0, 1, 1)
+        DebugCross(measurements[i].pos_a, 0, 1, 0)
+        DebugCross(measurements[i].blevel, 0, 0, 1)
 
         DebugCross(measurements[i].aprim, 0, 1, 1) -- cyan
         DebugCross(measurements[i].bprim, 1, 1, 0) -- yellow
         
-        
-        DebugCross(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))
 
-        if orientation == "horizontal" then
+        if measurements[i].orientation == "horizontal" then
             DebugLine(measurements[i].pos_a, measurements[i].aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
             DebugLine(measurements[i].pos_a, measurements[i].bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
 
@@ -37,6 +35,8 @@ function renderMeasurements(completed, i)
             DebugLine(measurements[i].blevel, measurements[i].bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
 
             DebugCross(measurements[i].blevel, 0, 0, 1, 1)
+
+            DebugCross(VecLerp(measurements[i].pos_a, measurements[i].blevel, 0.5))
 
             DebugLine(measurements[i].pos_a, measurements[i].blevel, 1, 1, 1, 0.1) -- diagonal a to b
             DebugLine(measurements[i].aprim, measurements[i].bprim, 1, 1, 1, 0.1) --  -- diagonal a' to b'
@@ -63,7 +63,7 @@ function renderMeasurements(completed, i)
 
         DebugCross(measurements[i].binv, 1, 0, 1) -- yellow
 
-        if orientation == "horizontal" then
+        if measurements[i].orientation == "horizontal" then
             DebugLine(measurements[i].binv, measurements[i].aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
             DebugLine(measurements[i].binv, measurements[i].bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
 
