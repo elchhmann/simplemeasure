@@ -3,11 +3,11 @@
 
 function renderLabels(i)
     if measurements[i].type == "cprect" then
-        dimensionx = VecLength(VecSub(binv, bprim))
-        dimensiony = VecLength(VecSub(binv, aprim))
+        dimensionx = VecLength(VecSub(measurements[i].binv, measurements[i].bprim))
+        dimensiony = VecLength(VecSub(measurements[i].binv, measurements[i].aprim))
     else
-        dimensionx = VecLength(VecSub(measurements[i].pos_a, bprim))
-        dimensiony = VecLength(VecSub(measurements[i].pos_a, aprim))
+        dimensionx = VecLength(VecSub(measurements[i].pos_a, measurements[i].bprim))
+        dimensiony = VecLength(VecSub(measurements[i].pos_a, measurements[i].aprim))
     end
         
     if measurements[i].type == "cprect" then
@@ -18,7 +18,7 @@ function renderLabels(i)
 
     if measurements[i].type == "rect" then
         if orientation == "horizontal" then
-            uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, blevel, 0.5)) -- Get the position of the text in the middle of the line
+            uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].blevel, 0.5)) -- Get the position of the text in the middle of the line
         else
             uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))
         end

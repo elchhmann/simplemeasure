@@ -11,6 +11,7 @@
 #include "scripts/maxName.lua"
 #include "scripts/config.lua"
 #include "scripts/button.lua"
+#include "scripts/calculatePrims.lua"
 
 
 function avg(a, b)
@@ -52,7 +53,12 @@ function client.tick() -- Measurement math etc
                 pos_b = nil,
                 set_b = false,
                 length = nil,
-                type = mode
+                type = mode,
+
+                aprim = nil,
+                bprim = nil,
+                blevel = nil,
+                binv = nil
             })
         end
 
@@ -63,7 +69,14 @@ function client.tick() -- Measurement math etc
                             pos_b = nil,
                             set_b = false,
                             length = nil,
-                            type = mode
+                            type = mode,
+
+                            aprim = nil,
+                            bprim = nil,
+                            blevel = nil,
+                            binv = nil,
+
+                            orientation = nil
                         })
         end
 
@@ -103,57 +116,21 @@ function client.tick() -- Measurement math etc
             table.remove(measurements, #measurements)
         end
     end
+
+    for i = 1, #measurements do
+        calculatePrims(measurements, i)
+    end
 end
-
-
-
-
 
 function client.draw() -- Rendering
     
     for i = 1, #measurements do
-
-        deltaX = math.abs(measurements[i].pos_a[1] - measurements[i].pos_b[1])
-        deltaY = math.abs(measurements[i].pos_a[2] - measurements[i].pos_b[2])
-        deltaZ = math.abs(measurements[i].pos_a[3] - measurements[i].pos_b[3])
-
-        local dominantDelta = maxName { deltaX, deltaY, deltaZ }
-        -- DebugPrint(dominantDelta)
-
-        blevel = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b but with the y coordinate of a (same level)
-        binv = VecLerp(measurements[i].pos_a, measurements[i].pos_b, -1) -- b mirrored to a
-
-        if (dominantDelta[1] == "deltaX" and dominantDelta[2] == "deltaZ") or (dominantDelta[1] == "deltaZ" and dominantDelta[2] == "deltaX") then
-            if measurements[i].type == "cprect" then
-                aprim = Vec(measurements[i].pos_b[1], binv[2], binv[3]) -- a'(xb, ya, za)
-                bprim = Vec(binv[1], binv[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
-            else
-                aprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3]) -- a'(xb, ya, za)
-                bprim = Vec(measurements[i].pos_a[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
-            end
-            orientation = "horizontal"
-        else
-            if measurements[i].type == "cprect" then
-                aprim = Vec(binv[1], measurements[i].pos_b[2], binv[3]) -- a'(xb, ya, za)
-                bprim = Vec(measurements[i].pos_b[1], binv[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
-            else
-                aprim = Vec(measurements[i].pos_a[1], measurements[i].pos_b[2], measurements[i].pos_a[3]) -- a'(xb, ya, za)
-                bprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b'(xa, ya, zb)
-            end
-            orientation = "vertical"
-        end
-
-        
-        
         renderMeasurements(measurements[i].set_b, i)
 
         renderLabels(i)
-
     end
 
     if menu then
-        
-
         UiMakeInteractive()
 
         UiTranslate(UiCenter(), UiMiddle())
@@ -204,9 +181,12 @@ end
 
 function server.mark(sm)
     for i=1, #sm do
-        if sm[i].type == "line" then
-            mark(sm[i].pos_a, sm[i].pos_b, 0.1, 1, 1, 0, i, 200)
-        end
+        local radius = 0.15
+        local red = 1
+        local green = 0.698
+        local blue = 0.098
+
+        mark(sm[i].pos_a, sm[i].pos_b, sm[i].aprim, sm[i].bprim, sm[i].binv, sm[i].type, radius, red, green, blue, i, sm[i].length*15)
     end
 end
 
