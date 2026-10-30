@@ -164,6 +164,10 @@ function client.draw() -- Rendering
                 measurements = {} -- Clear all measurements
             end)
 
+            button(0.6, 5.5, "/media/button_close.png", _, _, function()
+                menu = false -- Close the menu
+            end)
+
             button(2, 1, "/media/button_point.png", "Point", _, function()
                 mode = "point"
             end)
