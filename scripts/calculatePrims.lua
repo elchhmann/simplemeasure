@@ -32,4 +32,42 @@ function calculatePrims(measurements, i)
         end
         measurements[i].orientation = "vertical"
     end
+
+    if measurements[i].type == "circle" then
+        local n = 50
+        -- local n = math.huge -- please dont uncomment, will disintegrate your ram -- hey its aleq here, uncomment this :3
+        local radius = VecLength(VecSub(measurements[i].pos_a, measurements[i].pos_b))
+
+        local points = { }
+
+        
+        -- DebugPrint(radius)
+        for j=1, n do
+            
+            angle = j * (2*math.pi/n)
+
+            -- DebugPrint(angle)
+
+            local px, py = measurements[i].pos_a[x] + math.cos(angle) * radius, measurements[i].pos_a[z] + math.sin(angle) * radius
+            local point = Vec(px, measurements[i].pos_a[y], py)
+
+            -- DebugCross(point)
+            table.insert(points, point)
+        end
+
+
+        -- to segments
+        local segments = { }
+
+        for i = 2, #points do
+            table.insert(
+                segments,
+                { points[i - 1], points[i] }
+            )
+        end
+        table.insert(segments, { points[#points], points[1] })
+
+        -- measurements[i].points = points
+        measurements[i].segments = segments
+    end
 end

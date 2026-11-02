@@ -12,6 +12,7 @@
 #include "scripts/config.lua"
 #include "scripts/button.lua"
 #include "scripts/calculatePrims.lua"
+#include "scripts/addMeasurement.lua"
 
 
 function avg(a, b)
@@ -25,6 +26,26 @@ menu = false
 mode = "line"
 
 measurements = {}
+
+function GET_NULL_MEASUREMENT()
+    return {
+        pos_a = nil,
+        set_a = false,
+        pos_b = nil,
+        set_b = false,
+        length = nil,
+        type = mode,
+
+        aprim = nil,
+        bprim = nil,
+        blevel = nil,
+        binv = nil,
+
+        segments = {}
+    }
+end
+
+
 
 
 function client.tick() -- Measurement math etc
@@ -45,62 +66,7 @@ function client.tick() -- Measurement math etc
     end
 
     if InputPressed(KEY_NEW) then
-
-        if #measurements == 0 then -- If there are no measurements, create the first one
-            table.insert(measurements, {
-                pos_a = nil,
-                set_a = false,
-                pos_b = nil,
-                set_b = false,
-                length = nil,
-                type = mode,
-
-                aprim = nil,
-                bprim = nil,
-                blevel = nil,
-                binv = nil
-            })
-        end
-
-        if measurements[#measurements].set_b then -- Create a new measurement
-                table.insert(measurements, {
-                            pos_a = nil,
-                            set_a = false,
-                            pos_b = nil,
-                            set_b = false,
-                            length = nil,
-                            type = mode,
-
-                            aprim = nil,
-                            bprim = nil,
-                            blevel = nil,
-                            binv = nil,
-
-                            orientation = nil
-                        })
-        end
-
-        if measurements[#measurements].type == "point" then
-            measurements[#measurements].pos_a = hitPosition
-            measurements[#measurements].pos_b = hitPosition
-            measurements[#measurements].set_a = true 
-            measurements[#measurements].set_b = true
-            measurements[#measurements].length = VecLength(VecSub(measurements[#measurements].pos_a, measurements[#measurements].pos_b))
-        else
-
-            
-
-            if not measurements[#measurements].set_b and measurements[#measurements].set_a and dist < maxDist then -- Second point of the measurement; create a new one
-                measurements[#measurements].pos_b = hitPosition
-                measurements[#measurements].set_b = true
-                measurements[#measurements].length = VecLength(VecSub(measurements[#measurements].pos_a, measurements[#measurements].pos_b))
-            end
-
-            if not measurements[#measurements].set_a and dist < maxDist then -- First point of the measurement
-                measurements[#measurements].pos_a = hitPosition
-                measurements[#measurements].set_a = true 
-            end
-        end
+        addMeasurement(hitPosition, dist)
     end
 
     if #measurements > 0 and measurements[#measurements].set_a and not measurements[#measurements].set_b then
@@ -155,6 +121,10 @@ function client.draw() -- Rendering
                 mode = "rect"
             end)
 
+            button(1, 3, "/media/button_circle.png", "Circle", _, function()
+                mode = "circle"
+            end)
+
             button(1, 4, "/media/button_mark.png", "Mark", _, function()
                 local sm = measurements
                 ServerCall("server.mark", sm)
@@ -190,7 +160,21 @@ function server.mark(sm)
         local green = 0.698
         local blue = 0.098
 
-        mark(sm[i].pos_a, sm[i].pos_b, sm[i].aprim, sm[i].bprim, sm[i].binv, sm[i].type, radius, red, green, blue, i, sm[i].length*15)
+        local iterations
+
+        DebugPrint(sm[i].type)
+        
+        if sm[i].type == "circle" then
+            -- sm[i].segments[1][1]
+            -- sm[i].segments[1][2]
+            local segment_length = VecLength(sm[i].segments[1][1], sm[i].segments[1][2])
+            iterations = segment_length*1
+        else
+            iterations = sm[i].length*15
+        end
+
+
+        mark(sm[i].pos_a, sm[i].pos_b, sm[i].aprim, sm[i].bprim, sm[i].binv, sm[i].type, radius, red, green, blue, iterations, sm[i].segments)
     end
 end
 

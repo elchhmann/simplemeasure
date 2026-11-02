@@ -5,13 +5,16 @@ function renderLabels(i)
     if measurements[i].type == "cprect" then
         dimensionx = VecLength(VecSub(measurements[i].binv, measurements[i].bprim))
         dimensiony = VecLength(VecSub(measurements[i].binv, measurements[i].aprim))
+    elseif measurements[i].type == "circle" then
+        diameter = VecLength(VecSub(measurements[i].binv, measurements[i].bprim))
     else
         dimensionx = VecLength(VecSub(measurements[i].pos_a, measurements[i].bprim))
         dimensiony = VecLength(VecSub(measurements[i].pos_a, measurements[i].aprim))
     end
+    
         
-    if measurements[i].type == "cprect" then
-        uiX, uiY, UIdist = UiWorldToPixel(measurements[i].pos_a) -- Get the position of the text in the middle of the line [for cprect]
+    if measurements[i].type == "cprect" or measurements[i].type == "circle" then
+        uiX, uiY, UIdist = UiWorldToPixel(measurements[i].pos_a) -- Get the position of the text in the middle of the line [for cprect or circle]
     else
         uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5)) -- Get the position of the text in the middle of the line
     end
@@ -47,6 +50,10 @@ function renderLabels(i)
                 -- DebugPrint(measurements[i].type)
                 if measurements[i].type == "rect" or measurements[i].type == "cprect" then
                     UiText(string.format("%.2f m x %.2f m", dimensionx, dimensiony))
+                end
+
+                if measurements[i].type == "circle" then
+                    UiText(string.format("%.2f m", diameter))
                 end
             UiPop()
         end
