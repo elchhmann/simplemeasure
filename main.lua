@@ -165,12 +165,6 @@ function server.mark(sm)
             blue = 0.098,
             iterations = sm[i].length * 15
         }
-        -- local radius = 0.15
-        -- local red = 1
-        -- local green = 0.698
-        -- local blue = 0.098
-
-        -- local iterations
 
         DebugPrint(sm[i].type)
 
@@ -179,17 +173,8 @@ function server.mark(sm)
             MarkBuffer.MarkSettings.iterations = segment_length
         end
         
-        -- if sm[i].type == "circle" then
-        --     -- sm[i].segments[1][1]
-        --     -- sm[i].segments[1][2]
-        --     local segment_length = VecLength(sm[i].segments[1][1], sm[i].segments[1][2])
-        --     iterations = segment_length*1
-        -- else
-        --     iterations = sm[i].length*15
-        -- end
         if sm[i].set_b then
             MarkBuffer:Add(sm[i])
-            -- mark(sm[i].pos_a, sm[i].pos_b, sm[i].aprim, sm[i].bprim, sm[i].binv, sm[i].type, radius, red, green, blue, iterations, sm[i].segments)
         end
     end
 end
