@@ -8,7 +8,9 @@ function mark(a, b, aprim, bprim, binv, type, radius, red, green, blue, iteratio
     if type == "circle" or type == "2pcircle" then
         for index, segment in ipairs(segments) do
             -- DebugPrint("Iteration: " .. tostring(i) .. " Segment: " .. tostring(index))
-            mark(segment[1], segment[2], nil, nil, nil, "line", radius, red, green, blue, iterations, nil)
+            -- mark(segment[1], segment[2], nil, nil, nil, "line", radius, red, green, blue, iterations, nil)
+            MarkBuffer:Add(segment)
+            -- AddToBuffer
         end
 
         return
