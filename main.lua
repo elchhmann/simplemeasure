@@ -13,6 +13,7 @@
 #include "scripts/button.lua"
 #include "scripts/calculatePrims.lua"
 #include "scripts/addMeasurement.lua"
+#include "scripts/setting.lua"
 
 
 function avg(a, b)
@@ -56,16 +57,16 @@ function client.tick() -- Measurement math etc
     hitPosition = VecAdd(origin, VecScale(cameraDirection, dist)) -- Position where the raycast hits
     hitPositionSnapped = Vec(round(hitPosition[1],1), round(hitPosition[2],1), round(hitPosition[3],1))
 
-    if InputPressed(KEY_MENU) then
+    if InputPressed(config.KEY_MENU) then
         menu = not menu
     end
 
-    if InputDown(KEY_SNAP) and VecLength(GetPlayerVelocity()) < 0.1 then
+    if InputDown(config.KEY_SNAP) and VecLength(GetPlayerVelocity()) < 0.1 then
         hitPosition = hitPositionSnapped
         DebugCross(hitPosition, 0, 0, 255, 1)
     end
 
-    if InputPressed(KEY_NEW) then
+    if InputPressed(config.KEY_NEW) then
         addMeasurement(hitPosition, dist)
     end
 
@@ -76,7 +77,7 @@ function client.tick() -- Measurement math etc
         end
     end
 
-    if InputPressed(KEY_CANCEL) then -- Removes last measurement
+    if InputPressed(config.KEY_CANCEL) then -- Removes last measurement
 
         if #measurements > 0 and measurements[#measurements].set_a and not measurements[#measurements].set_b then
             table.remove(measurements, #measurements)
@@ -107,11 +108,11 @@ function client.draw() -- Rendering
 
         UiPush()
             UiColor(0, 0, 0, 0.6)
-            UiRect(MENU_WIDTH, MENU_HEIGHT)
+            UiRect(config.MENU_WIDTH, config.MENU_HEIGHT)
         UiPop()
 
         UiPush()
-            UiTranslate(-MENU_WIDTH/2 + BUTTON_SIZE/2 + BUTTON_SPACING_HORIZONTAL, -MENU_HEIGHT/2 + BUTTON_SIZE/2 + BUTTON_SPACING_VERTICAL) -- First row
+            UiTranslate(- config.MENU_WIDTH/2 + config.BUTTON_SIZE/2 + config.BUTTON_SPACING_HORIZONTAL, - config.MENU_HEIGHT/2 + config.BUTTON_SIZE/2 + config.BUTTON_SPACING_VERTICAL) -- Move cursor to first row and column
 
             button(1, 1, "/media/button_line.png", "Line", _, function()
                 mode = "line"
@@ -153,6 +154,29 @@ function client.draw() -- Rendering
             button(2, 5, "/media/revert.png", "Clear last", _, function()
                 table.remove(measurements, #measurements) -- Remove last measurement
             end)
+        UiPop()
+        
+        UiPush()
+            UiTranslate(-720, 0)
+
+            UiPush()
+                UiColor(0, 0, 0, 0.6)
+                
+                UiRect(450, config.MENU_HEIGHT*1.9)
+
+                UiPush()
+                    UiTranslate(0, -490)
+                    UiColor(1, 1, 1, 1)
+                    UiText("Settings")
+                UiPop()
+            UiPop()
+
+            UiPush()
+                UiTranslate(-200, -450)
+                setting(1, "Show diagonals", "show_diag")
+                setting(2, "Mark diagonals", "mark_diag")
+                setting(3, "Mark points", "mark_points")
+            UiPop()
         UiPop()
     end
 end

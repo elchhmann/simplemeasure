@@ -4,7 +4,7 @@
 
 function button(row, column, filepath, text, text2, action)
     UiPush()
-        UiTranslate((column-1)*(BUTTON_SIZE + BUTTON_SPACING_HORIZONTAL), (row-1)*(BUTTON_SPACING_VERTICAL*2 + BUTTON_SIZE))
+        UiTranslate((column-1)*(config.BUTTON_SIZE + config.BUTTON_SPACING_HORIZONTAL), (row-1)*(config.BUTTON_SPACING_VERTICAL*2 + config.BUTTON_SIZE))
         if UiImageButton(filepath) then
             action()
         end
