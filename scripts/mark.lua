@@ -5,10 +5,9 @@
 
 
 function mark(a, b, aprim, bprim, binv, type, radius, red, green, blue, iterations, segments)
-
     if type == "circle" then
         for index, segment in ipairs(segments) do
-            -- DebugPrint("Wykonano iteracje " .. tostring(i) .. " i segmentacje " .. tostring(index) .. " nigger")
+            -- DebugPrint("Iteration: " .. tostring(i) .. " Segment: " .. tostring(index))
             mark(segment[1], segment[2], nil, nil, nil, "line", radius, red, green, blue, iterations, nil)
         end
 
@@ -51,12 +50,5 @@ function mark(a, b, aprim, bprim, binv, type, radius, red, green, blue, iteratio
             spot = VecLerp(b, bprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
         end
-
-        -- if type == "circle" then
-        --     for index, segment in ipairs(segments) do
-        --         DebugPrint("Wykonano iteracje " .. tostring(i) .. " i segmentacje " .. tostring(index) .. " nigger")
-        --         -- mark(segment[1], segment[2], nil, nil, nil, "line", radius, red, green, blue, iterations, nil)
-        --     end
-        -- end
     end
 end

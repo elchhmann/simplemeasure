@@ -172,9 +172,9 @@ function server.mark(sm)
         else
             iterations = sm[i].length*15
         end
-
-
-        mark(sm[i].pos_a, sm[i].pos_b, sm[i].aprim, sm[i].bprim, sm[i].binv, sm[i].type, radius, red, green, blue, iterations, sm[i].segments)
+        if sm[i].set_b then
+            mark(sm[i].pos_a, sm[i].pos_b, sm[i].aprim, sm[i].bprim, sm[i].binv, sm[i].type, radius, red, green, blue, iterations, sm[i].segments)
+        end
     end
 end
 
