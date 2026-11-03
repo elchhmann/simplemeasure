@@ -10,6 +10,8 @@ function mark(a, b, aprim, bprim, binv, type, radius, red, green, blue, iteratio
             local m = GET_NULL_MEASUREMENT()
             m.pos_a = segment[1]
             m.pos_b = segment[2]
+            m.iterations = iterations
+            m.segments = segments
 
             MarkBuffer:Add(m, iterations, nil)
         end
