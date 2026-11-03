@@ -11,7 +11,7 @@ do
 
     ---@class MarkBuffer
     ---@field private _Measurements table[]
-    ---@field public Add fun(self: MarkBuffer, segment: table, iterations: number)
+    ---@field public Add fun(self: MarkBuffer, segment: table, iterations: number, segments: table[]|nil)
     ---@field public MarkFirst fun(self: MarkBuffer)
     ---@field public MarkSettings MarkSetting
     local __markBuffer = { }
@@ -32,8 +32,9 @@ MarkBuffer = {
     },
 
 
-    Add = function (self, segment, iterations)
+    Add = function (self, segment, iterations, segments)
         segment.iterations = iterations
+        segment.segments = segments
         table.insert(self._Measurements, segment)   ---@diagnostic disable-line : invisible
     end,
 
@@ -48,8 +49,8 @@ MarkBuffer = {
         table.remove(list, 1)
         mark(
             first.pos_a, first.pos_b, first.aprim, first.bprim, first.binv, first.type,
-            self.MarkSettings.red, self.MarkSettings.green, self.MarkSettings.blue, first.iterations,
-            first.segments
+            self.MarkSettings.red, self.MarkSettings.green, self.MarkSettings.blue,
+            first.iterations, first.segments
         )
     end
 }

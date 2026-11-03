@@ -7,7 +7,7 @@
 function mark(a, b, aprim, bprim, binv, type, radius, red, green, blue, iterations, segments)
     if type == "circle" or type == "2pcircle" then
         for index, segment in ipairs(segments) do
-            MarkBuffer:Add(segment, iterations)
+            MarkBuffer:Add(segment, iterations, nil)
         end
 
         return
