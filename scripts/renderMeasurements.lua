@@ -96,7 +96,7 @@ function renderMeasurements(completed, i)
     end
 
     if measurement.type == "circle" then
-        DebugCross(measurement.pos_a, 1, 1, 1, 1)
+        DebugCross(center, 1, 1, 1, 1)
         DebugCross(measurement.blevel, 0, 0, 1)
 
         for _, segment in ipairs(measurement.segments) do
@@ -104,6 +104,18 @@ function renderMeasurements(completed, i)
         end
 
         DebugLine(measurement.binv, measurement.pos_b, 1, 1, 1, opacity)
+    end
+
+    if measurement.type == "2pcircle" then
+        DebugCross(measurement.pos_a, 0, 1, 0, 1)
+        DebugCross(measurement.blevel, 0, 0, 1)
+        DebugCross(center)
+
+        for _, segment in ipairs(measurement.segments) do
+            DebugLine(segment[1], segment[2], 1, 0, 0, opacity)
+        end
+
+        DebugLine(measurement.pos_a, measurement.pos_b, 1, 1, 1, opacity)
     end
 
 end

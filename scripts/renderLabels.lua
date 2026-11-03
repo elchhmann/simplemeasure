@@ -6,7 +6,9 @@ function renderLabels(i)
         dimensionx = VecLength(VecSub(measurements[i].binv, measurements[i].bprim))
         dimensiony = VecLength(VecSub(measurements[i].binv, measurements[i].aprim))
     elseif measurements[i].type == "circle" then
-        diameter = VecLength(VecSub(measurements[i].binv, measurements[i].bprim))
+        diameter = VecLength(VecSub(measurements[i].binv, measurements[i].pos_b))
+    elseif measurements[i].type == "2pcircle" then
+        diameter = VecLength(VecSub(measurements[i].binv, measurements[i].pos_a))
     else
         dimensionx = VecLength(VecSub(measurements[i].pos_a, measurements[i].bprim))
         dimensiony = VecLength(VecSub(measurements[i].pos_a, measurements[i].aprim))
@@ -53,6 +55,10 @@ function renderLabels(i)
                 end
 
                 if measurements[i].type == "circle" then
+                    UiText(string.format("%.2f m", diameter))
+                end
+
+                if measurements[i].type == "2pcircle" then
                     UiText(string.format("%.2f m", diameter))
                 end
             UiPop()

@@ -121,11 +121,11 @@ function client.draw() -- Rendering
                 mode = "rect"
             end)
 
-            button(1, 3, "/media/button_circle.png", "Circle", _, function()
-                mode = "circle"
+            button(1, 3, "/media/button_2pcircle.png", "Circular", _, function()
+                mode = "2pcircle"
             end)
 
-            button(1, 4, "/media/button_mark.png", "Mark", _, function()
+            button(1, 4, "/media/button_mark.png", "Mark all", _, function()
                 local sm = measurements
                 ServerCall("server.mark", sm)
             end)
@@ -144,6 +144,10 @@ function client.draw() -- Rendering
 
             button(2, 2, "/media/button_cprect.png", "Center Point", "Rectangular", function()
                 mode = "cprect"
+            end)
+
+            button(2, 3, "/media/button_circle.png", "Center Point", "Circular", function()
+                mode = "circle"
             end)
 
             button(2, 5, "/media/revert.png", "Clear last", _, function()
