@@ -13,6 +13,7 @@
 #include "scripts/button.lua"
 #include "scripts/calculatePrims.lua"
 #include "scripts/addMeasurement.lua"
+#include "scripts/markBuffer.lua"
 
 function avg(a, b)
     return ((a+b)/2)
