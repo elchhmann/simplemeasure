@@ -159,23 +159,29 @@ end
 
 function server.mark(sm)
     for i=1, #sm do
+        
+        
         MarkBuffer.MarkSettings = {
             radius = 0.15,
             red = 1,
             green = 0.698,
             blue = 0.098,
-            iterations = sm[i].length * 15
+            -- iterations = sm[i].length * 15
         }
-
-        DebugPrint(sm[i].type)
+        
+        -- DebugPrint(sm[i].type)
+        
+        local iterations
 
         if sm[i].type == "circle" then
             local segment_length = VecLength(sm[i].segments[1][1], sm[i].segments[1][2])
-            MarkBuffer.MarkSettings.iterations = segment_length
+            iterations = segment_length
+        else
+            iterations = sm[i].length * 15
         end
         
         if sm[i].set_b then
-            MarkBuffer:Add(sm[i])
+            MarkBuffer:Add(sm[i], iterations)
         end
     end
 end

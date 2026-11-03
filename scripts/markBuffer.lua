@@ -7,12 +7,11 @@ do
     ---@field public red number
     ---@field public green number
     ---@field public blue number
-    ---@field public iterations integer
     local __markSetting = { }
 
     ---@class MarkBuffer
     ---@field private _Measurements table[]
-    ---@field public Add fun(self: MarkBuffer, segment: table)
+    ---@field public Add fun(self: MarkBuffer, segment: table, iterations: number)
     ---@field public MarkFirst fun(self: MarkBuffer)
     ---@field public MarkSettings MarkSetting
     local __markBuffer = { }
@@ -29,11 +28,12 @@ MarkBuffer = {
         red = 0,
         green = 0,
         blue = 0,
-        iterations = 0
+        -- iterations = 0
     },
 
 
-    Add = function (self, segment)
+    Add = function (self, segment, iterations)
+        segment.iterations = iterations
         table.insert(self._Measurements, segment)   ---@diagnostic disable-line : invisible
     end,
 
