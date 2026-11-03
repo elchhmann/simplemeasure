@@ -48,7 +48,7 @@ MarkBuffer = {
         table.remove(list, 1)
         mark(
             first.pos_a, first.pos_b, first.aprim, first.bprim, first.binv, first.type,
-            self.MarkSettings.red, self.MarkSettings.green, self.MarkSettings.blue, self.MarkSettings.iterations,
+            self.MarkSettings.red, self.MarkSettings.green, self.MarkSettings.blue, first.iterations,
             first.segments
         )
     end
