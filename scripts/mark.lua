@@ -8,11 +8,13 @@ function mark(a, b, blevel, aprim, bprim, binv, type, radius, red, green, blue, 
     if type == "circle" or type == "2pcircle" then
         for index, segment in ipairs(segments) do
             -- DebugPrint("Iteration: " .. tostring(i) .. " Segment: " .. tostring(index))
-            mark(segment[1], segment[2], nil, nil, nil, "line", radius, red, green, blue, iterations, nil)
+            mark(segment[1], segment[2], nil, nil, nil, nil, "line", radius, red, green, blue, iterations, nil)
         end
 
         return
     end
+
+    DebugPrint(_G.type(iterations))
 
     for i=1, iterations do
         local spacing = i/iterations

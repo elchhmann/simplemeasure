@@ -43,6 +43,8 @@ function GET_NULL_MEASUREMENT()
         blevel = nil,
         binv = nil,
 
+        center = nil,
+        radius = nil,
         segments = {}
     }
 end
@@ -190,18 +192,19 @@ function server.mark(sm)
         local blue = 0.098
 
         local iterations
-
-        DebugPrint(sm[i].type)
         
-        if sm[i].type == "circle" then
+        if sm[i].type == "circle" or sm[i].type == "2pcircle" then
             -- sm[i].segments[1][1]
             -- sm[i].segments[1][2]
             local segment_length = VecLength(sm[i].segments[1][1], sm[i].segments[1][2])
             iterations = segment_length*1
+            DebugPrint(iterations)
         else
             iterations = sm[i].length*15
         end
+
         if sm[i].set_b then
+            DebugPrint(_G.type(iterations))
             mark(sm[i].pos_a, sm[i].pos_b, sm[i].blevel, sm[i].aprim, sm[i].bprim, sm[i].binv, sm[i].type, radius, red, green, blue, iterations, sm[i].segments)
         end
     end
