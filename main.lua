@@ -87,8 +87,6 @@ function client.tick() -- Measurement math etc
 
     for i = 1, #measurements do
         calculatePrims(measurements, i)
-
-        
     end
 end
 

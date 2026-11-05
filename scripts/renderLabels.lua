@@ -22,7 +22,7 @@ function renderLabels(i)
     end
 
     if measurements[i].type == "rect" then
-        if orientation == "horizontal" then
+        if measurements[i].orientation == "horizontal" then
             uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].blevel, 0.5)) -- Get the position of the text in the middle of the line
         else
             uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))
