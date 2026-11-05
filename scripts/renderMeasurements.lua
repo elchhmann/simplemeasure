@@ -11,6 +11,8 @@ z = 3
 function renderMeasurements(completed, i)
     opacity = completed and 1 or 0.2
 
+    color = isParralel(i) and (completed and {1, 0, 0} or {0, 1, 0}) or {1, 0, 0}
+
     local measurement = measurements[i]
         
     if measurement.type == "point" then
@@ -18,7 +20,7 @@ function renderMeasurements(completed, i)
     end
 
     if measurement.type == "line" then
-        DebugLine(measurement.pos_a, measurement.pos_b, 1, 0, 0, opacity)
+        DebugLine(measurement.pos_a, measurement.pos_b, color[1], color[2], color[3], opacity)
 
         DebugCross(measurement.pos_a, 0, 1, 0, 1)
         DebugCross(measurement.pos_b, 0, 0, 1, opacity)

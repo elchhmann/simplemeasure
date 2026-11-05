@@ -10,6 +10,7 @@
 #include "scripts/round.lua"
 #include "scripts/maxName.lua"
 #include "scripts/config.lua"
+#include "scripts/isParallel.lua"
 #include "scripts/button.lua"
 #include "scripts/calculatePrims.lua"
 #include "scripts/addMeasurement.lua"
@@ -86,6 +87,8 @@ function client.tick() -- Measurement math etc
 
     for i = 1, #measurements do
         calculatePrims(measurements, i)
+
+        
     end
 end
 
