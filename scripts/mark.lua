@@ -5,7 +5,14 @@
 
 
 function mark(a, b, blevel, aprim, bprim, binv, type, radius, red, green, blue, iterations, segments)
+
+    -- DebugPrint("Makrela")
+
+    -- DebugPrint(_G.type(radius))
+    -- DebugPrint(radius)
+
     if type == "circle" or type == "2pcircle" then
+        -- DebugPrint("Circle Makrela")
         for index, segment in ipairs(segments) do
             local m = GET_NULL_MEASUREMENT()
             m.pos_a = segment[1]
@@ -23,6 +30,8 @@ function mark(a, b, blevel, aprim, bprim, binv, type, radius, red, green, blue, 
 
     for i=1, iterations do
         local spacing = i/iterations
+
+        -- DebugPrint(type)
 
         if type == "line" then
             spot = VecLerp(a, b, spacing)

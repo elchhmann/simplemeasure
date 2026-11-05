@@ -35,6 +35,9 @@ MarkBuffer = {
         measurement.iterations = iterations
         measurement.segments = segments
         table.insert(self._Measurements, measurement)   ---@diagnostic disable-line : invisible
+
+        -- DebugPrint(_G.type(measurement.radius))
+        -- DebugPrint(measurement.radius)
     end,
 
 
@@ -47,6 +50,8 @@ MarkBuffer = {
     MarkFirst = function (self)
         local list = self._Measurements ---@diagnostic disable-line : invisible
 
+        -- DebugPrint(#list)
+
         if #list == 0 then
             return
         end
@@ -57,7 +62,7 @@ MarkBuffer = {
         -- DebugPrint(first.segments)
 
         mark(
-            first.pos_a, first.pos_b, first.blevel, first.aprim, first.bprim, first.binv, first.type, first.radius,
+            first.pos_a, first.pos_b, first.blevel, first.aprim, first.bprim, first.binv, first.type, self.MarkSettings.radius,
             self.MarkSettings.red, self.MarkSettings.green, self.MarkSettings.blue,
             first.iterations, first.segments
         )
