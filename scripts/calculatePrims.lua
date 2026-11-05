@@ -9,7 +9,7 @@ function calculatePrims(measurements, i)
     -- DebugPrint(dominantDelta)
 
     measurements[i].blevel = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b but with the y coordinate of a (same level)
-    measurements[i].binv = VecLerp(measurements[i].pos_a, measurements[i].pos_b, -1) -- b mirrored to a
+    measurements[i].binv = VecLerp(measurements[i].pos_a, measurements[i].blevel, -1) -- b mirrored to a
 
     
     
