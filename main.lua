@@ -14,6 +14,7 @@
 #include "scripts/button.lua"
 #include "scripts/calculatePrims.lua"
 #include "scripts/addMeasurement.lua"
+#include "scripts/markBuffer.lua"
 #include "scripts/setting.lua"
 
 
@@ -186,11 +187,18 @@ end
 
 function server.mark(sm)
     for i=1, #sm do
-        local radius = 0.15
-        local red = 1
-        local green = 0.698
-        local blue = 0.098
-
+        
+        
+        MarkBuffer.MarkSettings = {
+            radius = 0.15,
+            red = 1,
+            green = 0.698,
+            blue = 0.098,
+            -- iterations = sm[i].length * 15
+        }
+        
+        -- DebugPrint(sm[i].type)
+        
         local iterations
         
         if sm[i].type == "circle" or sm[i].type == "2pcircle" then
@@ -198,20 +206,20 @@ function server.mark(sm)
             -- sm[i].segments[1][2]
             local segment_length = VecLength(sm[i].segments[1][1], sm[i].segments[1][2])
             iterations = segment_length*1
-            DebugPrint(iterations)
+            -- DebugPrint(iterations)
         else
-            iterations = sm[i].length*15
+            iterations = sm[i].length * 15
         end
-
+        
         if sm[i].set_b then
-            DebugPrint(_G.type(iterations))
-            mark(sm[i].pos_a, sm[i].pos_b, sm[i].blevel, sm[i].aprim, sm[i].bprim, sm[i].binv, sm[i].type, radius, red, green, blue, iterations, sm[i].segments)
+            MarkBuffer:Add(sm[i], iterations, sm[i].segments)
         end
     end
 end
 
 
 
--- function server.tick()
---     DebugPrint()
--- end
+function server.tick()
+    -- DebugPrint()
+    MarkBuffer:MarkFirst()
+end
