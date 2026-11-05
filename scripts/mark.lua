@@ -19,7 +19,7 @@ function mark(a, b, blevel, aprim, bprim, binv, type, radius, red, green, blue, 
         return
     end
 
-    DebugPrint(_G.type(iterations))
+    -- DebugPrint(_G.type(iterations))
 
     for i=1, iterations do
         local spacing = i/iterations

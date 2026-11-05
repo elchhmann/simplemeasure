@@ -206,13 +206,13 @@ function server.mark(sm)
             -- sm[i].segments[1][2]
             local segment_length = VecLength(sm[i].segments[1][1], sm[i].segments[1][2])
             iterations = segment_length*1
-            DebugPrint(iterations)
+            -- DebugPrint(iterations)
         else
             iterations = sm[i].length * 15
         end
         
         if sm[i].set_b then
-            MarkBuffer:Add(sm[i], iterations)
+            MarkBuffer:Add(sm[i], iterations, sm[i].segments)
         end
     end
 end

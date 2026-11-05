@@ -52,8 +52,12 @@ MarkBuffer = {
         end
 
         local first = list[1]
+
+        -- DebugPrint(first.type)
+        -- DebugPrint(first.segments)
+
         mark(
-            first.pos_a, first.pos_b, first.aprim, first.bprim, first.binv, first.type,
+            first.pos_a, first.pos_b, first.blevel, first.aprim, first.bprim, first.binv, first.type, first.radius,
             self.MarkSettings.red, self.MarkSettings.green, self.MarkSettings.blue,
             first.iterations, first.segments
         )
