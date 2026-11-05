@@ -9,7 +9,7 @@ function calculatePrims(measurements, i)
     -- DebugPrint(dominantDelta)
 
     measurements[i].blevel = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b but with the y coordinate of a (same level)
-    measurements[i].binv = VecLerp(measurements[i].pos_a, measurements[i].pos_b, -1) -- b mirrored to a
+    measurements[i].binv = VecLerp(measurements[i].pos_a, measurements[i].blevel, -1) -- b mirrored to a
 
     
     
@@ -36,14 +36,14 @@ function calculatePrims(measurements, i)
     if measurements[i].type == "circle" or measurements[i].type == "2pcircle" then
         local n = 50
         -- local n = math.huge -- please dont uncomment, will disintegrate your ram -- hey its aleq here, uncomment this :3
-        local radius = VecLength(VecSub(measurements[i].pos_a, measurements[i].pos_b))
+        measurements[i].radius = VecLength(VecSub(measurements[i].pos_a, measurements[i].blevel))
         
         if measurements[i].type == "circle" then
-            center = measurements[i].pos_a
+            measurements[i].center = measurements[i].pos_a
         else
-            center = VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5)
+            measurements[i].center = VecLerp(measurements[i].pos_a, measurements[i].blevel, 0.5)
 
-            radius = radius/2
+            measurements[i].radius = measurements[i].radius/2
         end
 
         -- DebugCross(center, 1, 1, 0)
@@ -58,7 +58,7 @@ function calculatePrims(measurements, i)
 
             -- DebugPrint(angle)
 
-            local px, py = center[x] + math.cos(angle) * radius, center[z] + math.sin(angle) * radius
+            local px, py = measurements[i].center[x] + math.cos(angle) * measurements[i].radius, measurements[i].center[z] + math.sin(angle) * measurements[i].radius
             local point = Vec(px, measurements[i].pos_a[y], py)
 
             -- DebugCross(point)

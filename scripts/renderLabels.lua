@@ -6,7 +6,7 @@ function renderLabels(i)
         dimensionx = VecLength(VecSub(measurements[i].binv, measurements[i].bprim))
         dimensiony = VecLength(VecSub(measurements[i].binv, measurements[i].aprim))
     elseif measurements[i].type == "circle" then
-        diameter = VecLength(VecSub(measurements[i].binv, measurements[i].pos_b))
+        diameter = VecLength(VecSub(measurements[i].binv, measurements[i].blevel))
     elseif measurements[i].type == "2pcircle" then
         diameter = VecLength(VecSub(measurements[i].binv, measurements[i].pos_a))
     else
@@ -15,14 +15,34 @@ function renderLabels(i)
     end
     
         
-    if measurements[i].type == "cprect" or measurements[i].type == "circle" then
+    if measurements[i].type == "cprect" then
         uiX, uiY, UIdist = UiWorldToPixel(measurements[i].pos_a) -- Get the position of the text in the middle of the line [for cprect or circle]
     else
         uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5)) -- Get the position of the text in the middle of the line
     end
 
+    if measurements[i].type == "2pcircle" then
+        -- if measurements[i].orientation == "horizontal" then
+        --     uiX, uiY, UIdist = UiWorldToPixel(measurements[i].pos_a) -- Get the position of the text in the middle of the line
+        -- else
+        --     uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))
+        -- end
+
+        uiX, uiY, UIdist = UiWorldToPixel(measurements[i].center)
+    end
+
+    if measurements[i].type == "circle" then
+        -- if measurements[i].orientation == "horizontal" then
+        --     uiX, uiY, UIdist = UiWorldToPixel(measurements[i].pos_a) -- Get the position of the text in the middle of the line
+        -- else
+        --     uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))
+        -- end
+
+        uiX, uiY, UIdist = UiWorldToPixel(measurements[i].center)
+    end
+
     if measurements[i].type == "rect" then
-        if orientation == "horizontal" then
+        if measurements[i].orientation == "horizontal" then
             uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].blevel, 0.5)) -- Get the position of the text in the middle of the line
         else
             uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))

@@ -4,7 +4,7 @@
 
 
 
-function mark(a, b, aprim, bprim, binv, type, radius, red, green, blue, iterations, segments)
+function mark(a, b, blevel, aprim, bprim, binv, type, radius, red, green, blue, iterations, segments)
     if type == "circle" or type == "2pcircle" then
         for index, segment in ipairs(segments) do
             local m = GET_NULL_MEASUREMENT()
@@ -18,6 +18,8 @@ function mark(a, b, aprim, bprim, binv, type, radius, red, green, blue, iteratio
 
         return
     end
+
+    DebugPrint(_G.type(iterations))
 
     for i=1, iterations do
         local spacing = i/iterations
@@ -35,10 +37,10 @@ function mark(a, b, aprim, bprim, binv, type, radius, red, green, blue, iteratio
             spot = VecLerp(a, bprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
 
-            spot = VecLerp(b, aprim, spacing)
+            spot = VecLerp(blevel, aprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
 
-            spot = VecLerp(b, bprim, spacing)
+            spot = VecLerp(blevel, bprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
         end
 
@@ -49,10 +51,10 @@ function mark(a, b, aprim, bprim, binv, type, radius, red, green, blue, iteratio
             spot = VecLerp(binv, bprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
 
-            spot = VecLerp(b, aprim, spacing)
+            spot = VecLerp(blevel, aprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
 
-            spot = VecLerp(b, bprim, spacing)
+            spot = VecLerp(blevel, bprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
         end
     end
