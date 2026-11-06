@@ -44,6 +44,9 @@ function GET_NULL_MEASUREMENT()
         blevel = nil,
         binv = nil,
 
+        dimensionx = nil,
+        dimensiony = nil,
+
         center = nil,
         radius = nil,
         segments = {}

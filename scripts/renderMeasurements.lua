@@ -11,7 +11,10 @@ z = 3
 function renderMeasurements(completed, i)
     opacity = completed and 1 or 0.2
 
-    color = isParralel(i) and (completed and {1, 0, 0} or {0, 1, 0}) or {1, 0, 0}
+    color = (measurements[i].dimensionx == measurements[i].dimensiony) and (completed and {1, 0, 0} or {0, 1, 0}) or {1, 0, 0}
+
+    -- DebugPrint(measurements[i].dimensionx)
+    -- DebugPrint(measurements[i].dimensiony)
 
     local measurement = measurements[i]
         
@@ -20,6 +23,7 @@ function renderMeasurements(completed, i)
     end
 
     if measurement.type == "line" then
+        color = isParralel(i) and (completed and {1, 0, 0} or {0, 1, 0}) or {1, 0, 0}
         DebugLine(measurement.pos_a, measurement.pos_b, color[1], color[2], color[3], opacity)
 
         DebugCross(measurement.pos_a, 0, 1, 0, 1)
@@ -37,11 +41,11 @@ function renderMeasurements(completed, i)
         
 
         if measurement.orientation == "horizontal" then
-            DebugLine(measurement.pos_a, measurement.aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
-            DebugLine(measurement.pos_a, measurement.bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
+            DebugLine(measurement.pos_a, measurement.aprim, color[1], color[2], color[3], opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
+            DebugLine(measurement.pos_a, measurement.bprim, color[1], color[2], color[3], opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
 
-            DebugLine(measurement.blevel, measurement.aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-            DebugLine(measurement.blevel, measurement.bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+            DebugLine(measurement.blevel, measurement.aprim, color[1], color[2], color[3], opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
+            DebugLine(measurement.blevel, measurement.bprim, color[1], color[2], color[3], opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
 
             DebugCross(measurement.blevel, 0, 0, 1, 1)
 
@@ -52,11 +56,11 @@ function renderMeasurements(completed, i)
                 DebugLine(measurement.aprim, measurement.bprim, 1, 1, 1, 0.1) --  -- diagonal a' to b'
             end
         else
-            DebugLine(measurement.pos_a, measurement.aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
-            DebugLine(measurement.pos_a, measurement.bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
+            DebugLine(measurement.pos_a, measurement.aprim, color[1], color[2], color[3], opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
+            DebugLine(measurement.pos_a, measurement.bprim, color[1], color[2], color[3], opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
 
-            DebugLine(measurement.pos_b, measurement.aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-            DebugLine(measurement.pos_b, measurement.bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+            DebugLine(measurement.pos_b, measurement.aprim, color[1], color[2], color[3], opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
+            DebugLine(measurement.pos_b, measurement.bprim, color[1], color[2], color[3], opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
 
             DebugCross(measurement.pos_b, 0, 0, 1, 1)
 
@@ -77,11 +81,11 @@ function renderMeasurements(completed, i)
         DebugCross(measurement.binv, 1, 0, 1) -- yellow
 
         if measurement.orientation == "horizontal" then
-            DebugLine(measurement.binv, measurement.aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
-            DebugLine(measurement.binv, measurement.bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
+            DebugLine(measurement.binv, measurement.aprim, color[1], color[2], color[3], opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
+            DebugLine(measurement.binv, measurement.bprim, color[1], color[2], color[3], opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
 
-            DebugLine(measurement.blevel, measurement.aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-            DebugLine(measurement.blevel, measurement.bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+            DebugLine(measurement.blevel, measurement.aprim, color[1], color[2], color[3], opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
+            DebugLine(measurement.blevel, measurement.bprim, color[1], color[2], color[3], opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
 
             DebugCross(measurement.blevel, 0, 0, 1, 1)
 
@@ -90,11 +94,11 @@ function renderMeasurements(completed, i)
                 DebugLine(measurement.aprim, measurement.bprim, 1, 1, 1, 0.1) --  -- diagonal a' to b'
             end
         else
-            DebugLine(measurement.binv, measurement.aprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
-            DebugLine(measurement.binv, measurement.bprim, 1, 0, 0, opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
+            DebugLine(measurement.binv, measurement.aprim, color[1], color[2], color[3], opacity) -- From a(xa, ya, za) to  a'(xb, ya, za)
+            DebugLine(measurement.binv, measurement.bprim, color[1], color[2], color[3], opacity) -- From a(xa, ya, za) to  b'(xa, ya, zb)
 
-            DebugLine(measurement.pos_b, measurement.aprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
-            DebugLine(measurement.pos_b, measurement.bprim, 1, 0, 0, opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
+            DebugLine(measurement.pos_b, measurement.aprim, color[1], color[2], color[3], opacity) -- From b(xb, yb, zb) to  a'(xb, ya, za)
+            DebugLine(measurement.pos_b, measurement.bprim, color[1], color[2], color[3], opacity) -- From b(xb, yb, zb) to  b'(xa, ya, zb)
 
             DebugCross(measurement.pos_b, 0, 0, 1, 1)
 
