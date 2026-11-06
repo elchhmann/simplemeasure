@@ -89,7 +89,9 @@ function client.tick() -- Measurement math etc
     end
 
     for i = 1, #measurements do
-        calculatePrims(measurements, i)
+        if not measurements[i].set_b then
+            calculatePrims(measurements, i)
+        end
     end
 end
 
