@@ -186,8 +186,8 @@ function client.draw() -- Rendering
             UiPush()
                 UiTranslate(-200, -450)
                 setting(1, "Show diagonals", "show_diag")
-                setting(2, "Mark diagonals", "mark_diag")
-                setting(3, "Mark points", "mark_points")
+                -- setting(2, "Mark diagonals", "mark_diag")
+                -- setting(3, "Mark points", "mark_points")
             UiPop()
         UiPop()
 
