@@ -52,7 +52,9 @@ function GET_NULL_MEASUREMENT()
 
         center = nil,
         radius = nil,
-        segments = {}
+        segments = {},
+
+        hidden = false
     }
 end
 
@@ -102,9 +104,8 @@ function client.tick() -- Measurement math etc
 end
 
 function client.draw() -- Rendering
-    
-    if not config.hide_measurements then
-        for i = 1, #measurements do
+    for i = 1, #measurements do
+        if not config.hide_measurements and not measurements[i].hidden then
             renderMeasurements(measurements[i].set_b, i)
             renderLabels(i)
         end
@@ -245,7 +246,7 @@ function server.mark(sm)
             iterations = sm[i].length * 15
         end
         
-        if sm[i].set_b then
+        if sm[i].set_b and not sm[i].hidden then
             MarkBuffer:Add(sm[i], iterations, sm[i].segments)
         end
     end

@@ -13,10 +13,43 @@ function iMeasurement(i)
 
             local w = (UiGetTextSize(text) / 2)
 
-            UiTranslate(w, 1)
-            UiTextAlignment("left")
-            UiText(text)
+            UiPush()
+                UiTranslate(w, 1)
+                UiTextAlignment("left")
+                UiText(text)
+            UiPop()
             
+            UiPush()
+                UiTranslate(335)
+
+                UiScale(20/128)
+
+                local scale = UiGetScale()
+
+
+                
+                -- if UiImageButton("/media/clear.png") then
+                --     table.remove(measurements, i)
+                -- end
+                
+                UiTranslate(25/scale)
+
+                local bool = not measurements[i].hidden and "media/button_show.png" or "media/button_hide.png"
+                
+                if UiImageButton(bool) then
+                    measurements[i].hidden = not measurements[i].hidden
+                end
+
+                -- UiTranslate(25)
+                -- if UiImageButton(bool) then
+                --     -- mark
+                -- end
+
+                -- UiTranslate(25)
+                -- if UiImageButton(bool) then
+                --     -- share
+                -- end
+            UiPop()
         UiPop()
     UiPop()
 end
