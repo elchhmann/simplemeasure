@@ -67,7 +67,8 @@ function renderLabels(i)
                     UiColor(1,1,1,0.3)
                 end
 
-                UiText(i .. ": " .. measurements[i].label)
+                local showindex = config.show_index and (i .. ": " .. " ") or ("")
+                UiText(showindex .. measurements[i].label)
             UiPop()
         end
     end

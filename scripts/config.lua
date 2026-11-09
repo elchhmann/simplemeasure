@@ -17,9 +17,11 @@ config = {
     -- MENU_WIDTH = config.HORI_BUTTONS * config.BUTTON_SIZE + (config.HORI_BUTTONS+1) * config.BUTTON_SPACING_HORIZONTAL,
     MENU_HEIGHT = 500,
 
+    show_diag = false,
+    show_index = false,
     mark_diag = false,
-    show_diag = true,
     mark_points = false
+    
 }
 
 config.MENU_WIDTH = config.HORI_BUTTONS * config.BUTTON_SIZE + (config.HORI_BUTTONS+1) * config.BUTTON_SPACING_HORIZONTAL
