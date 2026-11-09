@@ -17,7 +17,7 @@ function renderMeasurements(completed, i)
     -- DebugPrint(measurements[i].dimensiony)
 
     local measurement = measurements[i]
-        
+    
     if measurement.type == "point" then
         DebugCross(measurement.pos_a, 0, 1, 0, 1)
     end
@@ -132,5 +132,4 @@ function renderMeasurements(completed, i)
 
         DebugLine(measurement.pos_a, measurement.blevel, 1, 1, 1, opacity) -- diameter
     end
-
 end

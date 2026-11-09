@@ -11,7 +11,8 @@ function setting(row, text, param)
             config[param] = not config[param]
         end
         UiPush()
-            UiTranslate(100, 1)
+            local w = (UiGetTextSize(text) / 2) + 15
+            UiTranslate(w, 1)
             UiTextAlignment("left")
             UiText(text)
         UiPop()

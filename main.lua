@@ -16,6 +16,7 @@
 #include "scripts/addMeasurement.lua"
 #include "scripts/markBuffer.lua"
 #include "scripts/setting.lua"
+#include "scripts/iMeasurement.lua"
 
 
 function avg(a, b)
@@ -46,6 +47,8 @@ function GET_NULL_MEASUREMENT()
 
         dimensionx = nil,
         dimensiony = nil,
+
+        label = nil,
 
         center = nil,
         radius = nil,
@@ -185,6 +188,29 @@ function client.draw() -- Rendering
                 setting(1, "Show diagonals", "show_diag")
                 setting(2, "Mark diagonals", "mark_diag")
                 setting(3, "Mark points", "mark_points")
+            UiPop()
+        UiPop()
+
+        UiPush()
+            UiTranslate(720, 0)
+
+            UiPush()
+                UiColor(0, 0, 0, 0.6)
+                
+                UiRect(450, config.MENU_HEIGHT*1.9)
+
+                UiPush()
+                    UiTranslate(0, -490)
+                    UiColor(1, 1, 1, 1)
+                    UiText("Measurements")
+                UiPop()
+            UiPop()
+
+            UiPush()
+                UiTranslate(-200, -450)
+                for i = 1, math.min(#measurements, 30) do
+                    iMeasurement(i)
+                end
             UiPop()
         UiPop()
     end
