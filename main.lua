@@ -71,12 +71,12 @@ function client.tick() -- Measurement math etc
         menu = not menu
     end
 
-    if InputDown(config.KEY_SNAP) and VecLength(GetPlayerVelocity()) < 0.1 then
+    if InputDown(config.KEY_SNAP) and VecLength(GetPlayerVelocity()) < 0.1 and not config.hide_measurements then
         hitPosition = hitPositionSnapped
         DebugCross(hitPosition, 0, 0, 255, 1)
     end
 
-    if InputPressed(config.KEY_NEW) then
+    if InputPressed(config.KEY_NEW) and not config.hide_measurements then
         addMeasurement(hitPosition, dist)
     end
 
@@ -103,10 +103,11 @@ end
 
 function client.draw() -- Rendering
     
-    for i = 1, #measurements do
-        renderMeasurements(measurements[i].set_b, i)
-
-        renderLabels(i)
+    if not config.hide_measurements then
+        for i = 1, #measurements do
+            renderMeasurements(measurements[i].set_b, i)
+            renderLabels(i)
+        end
     end
 
     if menu then
@@ -187,6 +188,7 @@ function client.draw() -- Rendering
                 UiTranslate(-200, -450)
                 setting(1, "Show diagonals", "show_diag")
                 setting(2, "Show measurement index", "show_index")
+                setting(3, "Hide measurements", "hide_measurements")
                 -- setting(3, "Mark diagonals", "mark_diag")
                 -- setting(4, "Mark points", "mark_points")
             UiPop()

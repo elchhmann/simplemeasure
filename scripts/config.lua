@@ -19,6 +19,7 @@ config = {
 
     show_diag = false,
     show_index = false,
+    hide_measurements = false,
     mark_diag = false,
     mark_points = false
     
