@@ -79,7 +79,7 @@ function client.tick() -- Measurement math etc
     end
 
     if InputPressed(config.KEY_NEW) and not config.hide_measurements then
-        addMeasurement(hitPosition, dist)
+        addMeasurement(hitPosition)
     end
 
     if #measurements > 0 and measurements[#measurements].set_a and not measurements[#measurements].set_b then
@@ -212,8 +212,12 @@ function client.draw() -- Rendering
 
             UiPush()
                 UiTranslate(-200, -450)
-                for i = 1, math.min(#measurements, 30) do
-                    iMeasurement(i)
+                local i = 1
+                while i <= math.min(#measurements, 30) do
+                    if measurements[i] then
+                        iMeasurement(i)
+                        i = i + 1
+                    end
                 end
             UiPop()
         UiPop()
