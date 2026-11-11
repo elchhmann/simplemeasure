@@ -18,11 +18,6 @@
 #include "scripts/setting.lua"
 #include "scripts/iMeasurement.lua"
 
-
-function avg(a, b)
-    return ((a+b)/2)
-end
-
 maxDist = 1000
 
 menu = false
@@ -57,9 +52,6 @@ function GET_NULL_MEASUREMENT()
         hidden = false
     }
 end
-
-
-
 
 function client.tick() -- Measurement math etc
     
@@ -190,6 +182,8 @@ function client.draw() -- Rendering
                 setting(1, "Show diagonals", "show_diag")
                 setting(2, "Show measurement index", "show_index")
                 setting(3, "Hide measurements", "hide_measurements")
+                setting(4, "Hide particles", "hide_particles")
+                setting(5, "Mute sounds", "mute_sounds")
                 -- setting(3, "Mark diagonals", "mark_diag")
                 -- setting(4, "Mark points", "mark_points")
             UiPop()
@@ -261,4 +255,24 @@ end
 function server.tick()
     -- DebugPrint()
     MarkBuffer:MarkFirst()
+end
+
+function client.fx(pos, vel, life, red, green, blue)
+    -- vfx
+    if not config.hide_particles then
+        local radius = 0.15
+        ParticleTile(0)
+        ParticleRadius(radius, 0)
+        ParticleAlpha(1, 0)
+        ParticleGravity(-10)
+        ParticleColor(red, green, blue)
+        SpawnParticle(pos, vel, life)
+    end
+
+    --sfx
+    if not config.mute_sounds then
+        sfx = LoadLoop("sfx/spray-loop.ogg")
+
+        PlayLoop(sfx, pos)
+    end
 end

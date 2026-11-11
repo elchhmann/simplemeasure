@@ -23,7 +23,7 @@ function renderMeasurements(completed, i)
     end
 
     if measurement.type == "line" then
-        color = isParralel(i) and (completed and {1, 0, 0} or {0, 1, 0}) or {1, 0, 0}
+        color = isParallel(i) and (completed and {1, 0, 0} or {0, 1, 0}) or {1, 0, 0}
         DebugLine(measurement.pos_a, measurement.pos_b, color[1], color[2], color[3], opacity)
 
         DebugCross(measurement.pos_a, 0, 1, 0, 1)

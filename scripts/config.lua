@@ -21,8 +21,10 @@ config = {
     show_index = false,
     hide_measurements = false,
     mark_diag = false,
-    mark_points = false
-    
+    mark_points = false,
+
+    hide_particles = false,
+    mute_sounds = false,
 }
 
 config.MENU_WIDTH = config.HORI_BUTTONS * config.BUTTON_SIZE + (config.HORI_BUTTONS+1) * config.BUTTON_SPACING_HORIZONTAL

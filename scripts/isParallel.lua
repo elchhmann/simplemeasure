@@ -1,6 +1,6 @@
 ---@diagnostic disable : lowercase-global
 
-function isParralel(i)
+function isParallel(i)
     local x = 1
     local y = 2
     local z = 3

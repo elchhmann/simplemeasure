@@ -31,6 +31,9 @@ function mark(a, b, blevel, aprim, bprim, binv, type, radius, red, green, blue, 
     for i=1, iterations do
         local spacing = i/iterations
 
+        local vel = Vec(0,0,0)
+        local life = 1
+
         -- DebugPrint(type)
 
         if type == "line" then
@@ -42,29 +45,40 @@ function mark(a, b, blevel, aprim, bprim, binv, type, radius, red, green, blue, 
         if type == "rect" then
             spot = VecLerp(a, aprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
+            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
 
             spot = VecLerp(a, bprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
+            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
 
             spot = VecLerp(blevel, aprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
+            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
 
             spot = VecLerp(blevel, bprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
+            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
         end
 
         if type == "cprect" then -- cp stands for center point *
             spot = VecLerp(binv, aprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
+            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
 
             spot = VecLerp(binv, bprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
+            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
 
             spot = VecLerp(blevel, aprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
+            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
 
             spot = VecLerp(blevel, bprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
+            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
         end
+
+        ClientCall(0, "client.fx", spot, vel, life, red, green, blue)
     end
+
 end
