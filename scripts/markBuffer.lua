@@ -62,7 +62,7 @@ MarkBuffer = {
         -- DebugPrint(first.segments)
 
         mark(
-            first.pos_a, first.pos_b, first.blevel, first.aprim, first.bprim, first.binv, first.type, self.MarkSettings.radius,
+            first.pos_a, first.pos_b, first.blevel, first.aprim, first.bprim, first.binv, first.type, first.orientation, self.MarkSettings.radius,
             self.MarkSettings.red, self.MarkSettings.green, self.MarkSettings.blue,
             first.iterations, first.segments
         )

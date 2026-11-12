@@ -4,7 +4,7 @@
 
 
 
-function mark(a, b, blevel, aprim, bprim, binv, type, radius, red, green, blue, iterations, segments)
+function mark(a, b, blevel, aprim, bprim, binv, type, orientation, radius, red, green, blue, iterations, segments)
 
     -- DebugPrint("Makrela")
 
@@ -34,7 +34,15 @@ function mark(a, b, blevel, aprim, bprim, binv, type, radius, red, green, blue, 
         local vel = Vec(0,0,0)
         local life = 1
 
+        local spot
+
         -- DebugPrint(type)
+
+        if orientation == "vertical" then
+            orientB = b
+        else
+            orientB = blevel
+        end
 
         if type == "line" then
             spot = VecLerp(a, b, spacing)
@@ -43,6 +51,7 @@ function mark(a, b, blevel, aprim, bprim, binv, type, radius, red, green, blue, 
         end
 
         if type == "rect" then
+
             spot = VecLerp(a, aprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
             ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
@@ -51,11 +60,11 @@ function mark(a, b, blevel, aprim, bprim, binv, type, radius, red, green, blue, 
             PaintRGBA(spot, radius, red, green, blue)
             ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
 
-            spot = VecLerp(blevel, aprim, spacing)
+            spot = VecLerp(orientB, aprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
             ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
 
-            spot = VecLerp(blevel, bprim, spacing)
+            spot = VecLerp(orientB, bprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
             ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
         end
@@ -69,11 +78,11 @@ function mark(a, b, blevel, aprim, bprim, binv, type, radius, red, green, blue, 
             PaintRGBA(spot, radius, red, green, blue)
             ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
 
-            spot = VecLerp(blevel, aprim, spacing)
+            spot = VecLerp(orientB, aprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
             ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
 
-            spot = VecLerp(blevel, bprim, spacing)
+            spot = VecLerp(orientB, bprim, spacing)
             PaintRGBA(spot, radius, red, green, blue)
             ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
         end
