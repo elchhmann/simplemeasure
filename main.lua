@@ -17,6 +17,8 @@
 #include "scripts/markBuffer.lua"
 #include "scripts/setting.lua"
 #include "scripts/iMeasurement.lua"
+#include "scripts/closestPoint.lua"
+#include "scripts/indexOf.lua"
 
 maxDist = 1000
 
@@ -29,17 +31,18 @@ measurements = {}
 function GET_NULL_MEASUREMENT()
     return {
         pos_a = nil,
-        set_a = false,
         pos_b = nil,
-        set_b = false,
-        length = nil,
-        type = mode,
-
         aprim = nil,
         bprim = nil,
         blevel = nil,
         binv = nil,
+        
+        set_a = false,
+        set_b = false,
 
+        length = nil,
+        type = mode,
+        
         dimensionx = nil,
         dimensiony = nil,
 
@@ -59,7 +62,14 @@ function client.tick() -- Measurement math etc
     cameraDirection = TransformToParentVec(GetCameraTransform(), Vec(0, 0, -1)) -- Direction the camera is facing
     raycast, dist = QueryRaycast(origin, cameraDirection, maxDist) -- Raycast from the camera
     hitPosition = VecAdd(origin, VecScale(cameraDirection, dist)) -- Position where the raycast hits
-    hitPositionSnapped = Vec(round(hitPosition[1],1), round(hitPosition[2],1), round(hitPosition[3],1))
+    hitPositionRaw = hitPosition
+    
+
+    if #measurements > 0 and closestPoint(measurements, hitPositionRaw) ~= nil and not config.disable_snapping then
+        hitPositionSnapped = closestPoint(measurements, hitPositionRaw)
+    else
+        hitPositionSnapped = Vec(round(hitPosition[1],1), round(hitPosition[2],1), round(hitPosition[3],1))
+    end
 
     if InputPressed(config.KEY_MENU) then
         menu = not menu
@@ -89,10 +99,12 @@ function client.tick() -- Measurement math etc
     end
 
     for i = 1, #measurements do
-        if not measurements[i].set_b then
+        if not measurements[i].set_b and measurements[i].type ~= "line" then
             calculatePrims(measurements, i)
         end
     end
+
+    -- DebugCross(closestPoint(measurements, hitPositionRaw))
 end
 
 function client.draw() -- Rendering
@@ -145,9 +157,9 @@ function client.draw() -- Rendering
                 menu = false -- Close the menu
             end)
 
-            button(2, 1, "/media/button_point.png", "Point", _, function()
-                mode = "point"
-            end)
+            -- button(2, 1, "/media/button_point.png", "Point", _, function()
+            --     mode = "point"
+            -- end)
 
             button(2, 2, "/media/button_cprect.png", "Center Point", "Rectangular", function()
                 mode = "cprect"
@@ -184,6 +196,7 @@ function client.draw() -- Rendering
                 setting(3, "Hide measurements", "hide_measurements")
                 setting(4, "Hide particles", "hide_particles")
                 setting(5, "Mute sounds", "mute_sounds")
+                setting(6, "Disable snapping to existing points", "disable_snapping")
                 -- setting(3, "Mark diagonals", "mark_diag")
                 -- setting(4, "Mark points", "mark_points")
             UiPop()
