@@ -132,4 +132,12 @@ function renderMeasurements(completed, i)
 
         DebugLine(measurement.pos_a, measurement.blevel, 1, 1, 1, opacity) -- diameter
     end
+
+    if measurement.type == "compound" then
+        DebugCross(measurement.pos_a, 0, 1, 0, 1)
+        DebugCross(measurement.pos_b, 0, 0, 1, 1)
+
+        DebugCross(measurement.blevel, 0, 1, 1) -- cyan
+        DebugCross(measurement.bprim, 1, 1, 0) -- yellow
+    end
 end
