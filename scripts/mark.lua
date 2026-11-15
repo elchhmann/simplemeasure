@@ -26,6 +26,22 @@ function mark(a, b, blevel, aprim, bprim, binv, type, orientation, radius, red, 
         return
     end
 
+    if type == "comp" then
+        local compoundPoints = {a, bprim, blevel, b}
+
+        for i = 1, 3  do
+            local m = GET_NULL_MEASUREMENT()
+            m.pos_a = compoundPoints[i]
+            m.pos_b = compoundPoints[i + 1]
+            m.iterations = iterations
+            m.segments = compoundPoints
+
+            MarkBuffer:Add(m, iterations, nil)
+        end
+
+        return
+    end
+
     -- DebugPrint(_G.type(iterations))
 
     for i=1, iterations do
