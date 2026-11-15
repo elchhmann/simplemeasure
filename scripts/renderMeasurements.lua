@@ -139,5 +139,11 @@ function renderMeasurements(completed, i)
 
         DebugCross(measurement.blevel, 0, 1, 1) -- cyan
         DebugCross(measurement.bprim, 1, 1, 0) -- yellow
+
+        local compoundPoints = {measurements[i].pos_a, measurements[i].bprim, measurements[i].blevel, measurements[i].pos_b}
+
+        for j = 1, 3 do
+            DebugLine(compoundPoints[j], compoundPoints[j+1], 1, 0, 0, opacity)
+        end
     end
 end
