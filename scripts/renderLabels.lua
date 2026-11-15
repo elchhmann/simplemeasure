@@ -39,7 +39,7 @@ function renderLabels(i)
         measurements[i].label = string.format("%.2f m x %.2f m", measurements[i].dimensionx, measurements[i].dimensiony)
     end
 
-    if measurements[i].type == "circle" or "2pcircle" then
+    if measurements[i].type == "circle" or measurements[i].type == "2pcircle" then
         measurements[i].label = string.format("%.2f m", measurements[i].radius * 2)
     end
 
