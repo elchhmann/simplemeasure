@@ -57,7 +57,7 @@ function renderLabels(i)
     local compoundUIy = {}
     local compoundUIdist = {}
 
-    measurements[i].label = string.format("%.2f m", measurements[i].length)
+    -- measurements[i].label = string.format("%.2f m", measurements[i].length)
 
     local showindex = config.show_index and (i .. ": " .. " ") or ("")
 
