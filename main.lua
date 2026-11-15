@@ -56,6 +56,12 @@ function GET_NULL_MEASUREMENT()
     }
 end
 
+function client.init()
+    slider_red = 1 * 255
+    slider_green = 0.698 * 255
+    slider_blue = 0.098 * 255
+end
+
 function client.tick() -- Measurement math etc
     
     origin = GetCameraTransform().pos -- Position of the camera
@@ -122,14 +128,14 @@ function client.draw() -- Rendering
         UiAlign("center middle")
         UiFont("bold.ttf", 24)
         UiAlign("center middle")
-        UiBackgroundBlur(1.0)
+        -- UiBackgroundBlur(1.0)
 
         UiPush()
             UiColor(0, 0, 0, 0.6)
             UiRect(config.MENU_WIDTH, config.MENU_HEIGHT)
         UiPop()
 
-        UiPush()
+        UiPush() -- CENTER BOARD
             UiTranslate(- config.MENU_WIDTH/2 + config.BUTTON_SIZE/2 + config.BUTTON_SPACING_HORIZONTAL, - config.MENU_HEIGHT/2 + config.BUTTON_SIZE/2 + config.BUTTON_SPACING_VERTICAL) -- Move cursor to first row and column
 
             button(1, 1, "/media/button_line.png", "Line", _, function()
@@ -146,7 +152,7 @@ function client.draw() -- Rendering
 
             button(1, 4, "/media/button_mark.png", "Mark all", _, function()
                 local sm = measurements
-                ServerCall("server.mark", sm)
+                ServerCall("server.mark", sm, slider_red_value, slider_green_value, slider_blue_value)
             end)
 
             button(1, 5, "/media/clear.png", "Clear all", _, function()
@@ -178,7 +184,7 @@ function client.draw() -- Rendering
             end)
         UiPop()
         
-        UiPush()
+        UiPush() -- SETTINGS
             UiTranslate(-720, 0)
 
             UiPush()
@@ -206,7 +212,7 @@ function client.draw() -- Rendering
             UiPop()
         UiPop()
 
-        UiPush()
+        UiPush() -- LIST
             UiTranslate(720, 0)
 
             UiPush()
@@ -232,18 +238,109 @@ function client.draw() -- Rendering
                 end
             UiPop()
         UiPop()
+
+        UiPush() -- COLOR PICKER
+            UiTranslate(0, 400)
+
+            UiPush()
+                UiColor(0, 0, 0, 0.6)
+                
+                UiRect(config.MENU_WIDTH, config.MENU_HEIGHT*0.45)
+
+                UiPush() -- Text
+                    UiTranslate(0, -130)
+                    UiColor(1, 1, 1, 1)
+                    UiText("Color picker")
+
+                    UiPush() 
+                        UiTranslate(-300, 30)
+                        UiText("Custom color")
+                        UiPush() -- Slider: red
+                            local slider_red_x_axis = 255
+
+                            UiTranslate(0, 30)
+
+                            UiRect(slider_red_x_axis, 2)
+
+                            UiTranslate(-slider_red_x_axis/2, 0)
+
+                            slider_red = UiSlider("media/slider.png", "x", slider_red, 0, slider_red_x_axis)
+                            slider_red_value = slider_red / slider_red_x_axis
+
+                            UiTranslate(-25, 0)
+                            UiText("R")
+                            UiTranslate(slider_red_x_axis + 50, 0)
+                            UiText(round(slider_red_value, 2))
+                        UiPop()
+
+                        UiTranslate(0, 30)
+
+                        UiPush() -- Slider: green
+                            local slider_green_x_axis = 255
+
+                            UiTranslate(0, 30)
+
+                            UiRect(slider_green_x_axis, 2)
+
+                            UiTranslate(-slider_green_x_axis/2, 0)
+
+                            slider_green = UiSlider("media/slider.png", "x", slider_green, 0, slider_green_x_axis)
+                            slider_green_value = slider_green / slider_green_x_axis
+
+                            UiTranslate(-25, 0)
+                            UiText("G")
+                            UiTranslate(slider_green_x_axis + 50, 0)
+                            UiText(round(slider_green_value, 2))
+                        UiPop()
+
+                        UiTranslate(0, 30)
+
+                        UiPush() -- Slider: blue
+                            local slider_blue_x_axis = 255
+
+                            UiTranslate(0, 30)
+
+                            UiRect(slider_blue_x_axis, 2)
+
+                            UiTranslate(-slider_blue_x_axis/2, 0)
+
+                            slider_blue = UiSlider("media/slider.png", "x", slider_blue, 0, slider_blue_x_axis)
+                            slider_blue_value = slider_blue / slider_blue_x_axis
+
+                            UiTranslate(-25, 0)
+                            UiText("B")
+                            UiTranslate(slider_blue_x_axis + 50, 0)
+                            UiText(round(slider_blue_value, 2))
+                        UiPop()
+
+                        UiPush() -- Color preview
+
+                            UiTranslate(0, 100)
+                            UiColor(slider_red_value, slider_green_value, slider_blue_value)
+
+                            UiRect(300, 80)
+                        UiPop()
+                    UiPop()
+
+                    UiPush()
+                        UiTranslate(300, 30)
+                        UiText("Presets")
+                    UiPop()
+                UiPop()
+            UiPop()
+        UiPop()
     end
 end
 
-function server.mark(sm)
+function server.mark(sm, r, g, b)
     for i=1, #sm do
         
         
         MarkBuffer.MarkSettings = {
             radius = 0.15,
-            red = 1,
-            green = 0.698,
-            blue = 0.098,
+            red = r,
+            green = g,
+            blue = b,
             -- iterations = sm[i].length * 15
         }
         
