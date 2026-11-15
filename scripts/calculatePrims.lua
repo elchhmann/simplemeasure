@@ -34,8 +34,14 @@ function calculatePrims(measurements, i)
     end
 
     if measurements[i].type == "compound" then
-        measurements[i].aprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3])
-        measurements[i].bprim = Vec(measurements[i].pos_a[1], measurements[i].pos_a[2], measurements[i].pos_b[3])
+        -- DebugPrint(maxName{deltaX, deltaZ})
+        if maxName{deltaX, deltaZ}[1] == "deltaX" then
+            measurements[i].aprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3])
+            measurements[i].bprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3])
+        else
+            measurements[i].aprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3])
+            measurements[i].bprim = Vec(measurements[i].pos_a[1], measurements[i].pos_a[2], measurements[i].pos_b[3])
+        end
     end
 
     if measurements[i].type == "circle" or measurements[i].type == "2pcircle" then
