@@ -19,6 +19,8 @@
 #include "scripts/iMeasurement.lua"
 #include "scripts/closestPoint.lua"
 #include "scripts/indexOf.lua"
+#include "scripts/colorPresets.lua"
+#include "scripts/displayPresets.lua"
 
 maxDist = 1000
 
@@ -320,11 +322,15 @@ function client.draw() -- Rendering
 
                             UiRect(300, 80)
                         UiPop()
+
                     UiPop()
 
                     UiPush()
                         UiTranslate(300, 30)
                         UiText("Presets")
+
+                        UiTranslate(125, -15)
+                        displayPresets()
                     UiPop()
                 UiPop()
             UiPop()
