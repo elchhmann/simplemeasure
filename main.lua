@@ -169,6 +169,10 @@ function client.draw() -- Rendering
                 mode = "circle"
             end)
 
+            button(2, 4, "/media/button_circle.png", "Compound", _, function()
+                mode = "compound"
+            end)
+
             button(2, 5, "/media/revert.png", "Clear last", _, function()
                 table.remove(measurements, #measurements) -- Remove last measurement
             end)

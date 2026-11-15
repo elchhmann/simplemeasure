@@ -51,25 +51,59 @@ function renderLabels(i)
         measurements[i].label = string.format("%.2f m", diameter)
     end
 
-    if UIdist > 0 and measurements[i].set_a and measurements[i].length < maxDist then -- Measurement length label
-        if (not measurements[i].set_b and dist < maxDist) or measurements[i].set_b then
-            UiPush()
-                UiFont("bold.ttf", 24)
-                UiAlign("center middle")
-                UiTranslate(uiX, uiY-15)
+    local compoundPoints = {measurements[i].pos_a, measurements[i].bprim, measurements[i].blevel, measurements[i].pos_b}
 
-                if measurements[i].set_b then
-                    UiColor(1,1,1,1)
-                    UiTextOutline(0,0,0,5)
-                end
+    local compoundUIx = {}
+    local compoundUIy = {}
+    local compoundUIdist = {}
 
-                if not measurements[i].set_b then
-                    UiColor(1,1,1,0.3)
-                end
+    measurements[i].label = string.format("%.2f m", measurements[i].length)
 
-                local showindex = config.show_index and (i .. ": " .. " ") or ("")
-                UiText(showindex .. measurements[i].label)
-            UiPop()
+    local showindex = config.show_index and (i .. ": " .. " ") or ("")
+
+    UiPush()
+
+        UiFont("bold.ttf", 24)
+        UiAlign("center middle")
+
+        if measurements[i].set_b then
+            UiColor(1,1,1,1)
+            UiTextOutline(0,0,0,5)
         end
-    end
+
+        if not measurements[i].set_b then
+            UiColor(1,1,1,0.3)
+        end
+
+        if UIdist > 0 and measurements[i].set_a and measurements[i].length < maxDist and measurements[i].type ~= "compound" then -- Measurement length label
+            if (not measurements[i].set_b and dist < maxDist) or measurements[i].set_b then
+                UiTranslate(uiX, uiY-15)
+                UiText(showindex .. measurements[i].label)
+            end
+        end
+
+        if measurements[i].type == "compound" then
+            for j = 1, 3 do
+                DebugCross(VecLerp(compoundPoints[j], compoundPoints[j+1], 0.5))
+
+                compoundUIx[j] = select(1, UiWorldToPixel(VecLerp(compoundPoints[j], compoundPoints[j+1], 0.5)))
+                compoundUIy[j] = select(2, UiWorldToPixel(VecLerp(compoundPoints[j], compoundPoints[j+1], 0.5)))
+                compoundUIdist[j] = select(3, UiWorldToPixel(VecLerp(compoundPoints[j], compoundPoints[j+1], 0.5)))
+
+                if compoundUIdist[j] > 0 then
+                    UiTranslate(compoundUIx[j], compoundUIy[j]-15)
+
+                    -- DebugPrint("a: " .. tostring(points[j]) .. " b: " .. tostring(points[j+1]))
+
+                    local lengthCompound = VecLength(VecSub(compoundPoints[j], compoundPoints[j+1]))
+
+                    measurements[i].label = string.format("%.2f m", lengthCompound)
+
+                    UiText(showindex .. measurements[i].label)
+                end
+            end
+        end
+    UiPop()
+
+    
 end
