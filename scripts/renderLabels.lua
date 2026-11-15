@@ -6,10 +6,6 @@ function renderLabels(i)
         if measurements[i].type == "cprect" then
             measurements[i].dimensionx = round(VecLength(VecSub(measurements[i].binv, measurements[i].bprim)), 2)
             measurements[i].dimensiony = round(VecLength(VecSub(measurements[i].binv, measurements[i].aprim)), 2)
-        elseif measurements[i].type == "circle" then
-            diameter = VecLength(VecSub(measurements[i].binv, measurements[i].blevel))
-        elseif measurements[i].type == "2pcircle" then
-            diameter = VecLength(VecSub(measurements[i].binv, measurements[i].pos_a))
         else
             measurements[i].dimensionx = round(VecLength(VecSub(measurements[i].pos_a, measurements[i].bprim)), 2)
             measurements[i].dimensiony = round(VecLength(VecSub(measurements[i].pos_a, measurements[i].aprim)), 2)
@@ -43,12 +39,8 @@ function renderLabels(i)
         measurements[i].label = string.format("%.2f m x %.2f m", measurements[i].dimensionx, measurements[i].dimensiony)
     end
 
-    if measurements[i].type == "circle" then
-        measurements[i].label = string.format("%.2f m", diameter)
-    end
-
-    if measurements[i].type == "2pcircle" then
-        measurements[i].label = string.format("%.2f m", diameter)
+    if measurements[i].type == "circle" or "2pcircle" then
+        measurements[i].label = string.format("%.2f m", measurements[i].radius * 2)
     end
 
     local compoundPoints = {measurements[i].pos_a, measurements[i].bprim, measurements[i].blevel, measurements[i].pos_b}
