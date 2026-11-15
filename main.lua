@@ -169,7 +169,7 @@ function client.draw() -- Rendering
                 mode = "circle"
             end)
 
-            button(2, 4, "/media/button_circle.png", "Compound", _, function()
+            button(2, 4, "/media/button_compound.png", "Compound", _, function()
                 mode = "compound"
             end)
 
