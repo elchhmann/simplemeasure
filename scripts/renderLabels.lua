@@ -75,14 +75,14 @@ function renderLabels(i)
             UiColor(1,1,1,0.3)
         end
 
-        if UIdist > 0 and measurements[i].set_a and measurements[i].length < maxDist and measurements[i].type ~= "compound" then -- Measurement length label
+        if UIdist > 0 and measurements[i].set_a and measurements[i].length < maxDist and measurements[i].type ~= "comp" then -- Measurement length label
             if (not measurements[i].set_b and dist < maxDist) or measurements[i].set_b then
                 UiTranslate(uiX, uiY-15)
                 UiText(showindex .. measurements[i].label)
             end
         end
 
-        if measurements[i].type == "compound" then
+        if measurements[i].type == "comp" then
             for j = 1, 3 do
                 DebugCross(VecLerp(compoundPoints[j], compoundPoints[j+1], 0.5))
 

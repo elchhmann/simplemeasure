@@ -170,7 +170,7 @@ function client.draw() -- Rendering
             end)
 
             button(2, 4, "/media/button_compound.png", "Compound", _, function()
-                mode = "compound"
+                mode = "comp"
             end)
 
             button(2, 5, "/media/revert.png", "Clear last", _, function()

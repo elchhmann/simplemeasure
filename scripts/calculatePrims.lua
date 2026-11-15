@@ -33,7 +33,7 @@ function calculatePrims(measurements, i)
         measurements[i].orientation = "vertical"
     end
 
-    if measurements[i].type == "compound" then
+    if measurements[i].type == "comp" then
         -- DebugPrint(maxName{deltaX, deltaZ})
         if maxName{deltaX, deltaZ}[1] == "deltaX" then
             measurements[i].aprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3])

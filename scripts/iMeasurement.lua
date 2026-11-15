@@ -14,9 +14,18 @@ function iMeasurement(i, type, label)
 
                 UiScale(20/128)
 
+                local ilabel
+
+                if measurements[i].type == "comp" then
+                    compoundPoints = {measurements[i].pos_a, measurements[i].bprim, measurements[i].blevel, measurements[i].pos_b}
+
+                    ilabel = string.format("%.2f m x %.2f m %.2f m", VecLength(VecSub(compoundPoints[1], compoundPoints[2])), VecLength(VecSub(compoundPoints[2], compoundPoints[3])), VecLength(VecSub(compoundPoints[3], compoundPoints[4])))
+                else
+                    ilabel = measurements[i].label
+                end
                 local scale = UiGetScale()
                 local image = not measurements[i].hidden and "media/button_show.png" or "media/button_hide.png"
-                local text = i .. ": " .. "Type: " .. measurements[i].type .. " " .. measurements[i].label
+                local text = i .. ": " .. measurements[i].type .. " " .. ilabel
                 local w = (UiGetTextSize(text) / 2)
                 
                 if UiImageButton("/media/clear.png") then
