@@ -1,3 +1,5 @@
+---@diagnostic disable: lowercase-global
+
 colorPreset = 
 {
     {1, 0.698, 0.098},

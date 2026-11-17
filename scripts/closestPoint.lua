@@ -1,4 +1,5 @@
 ---@diagnostic disable : lowercase-global
+---@diagnostic disable : undefined-global
 
 ---@alias Vector table<integer, number>
 ---@enum PointsEnum

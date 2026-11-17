@@ -1,3 +1,5 @@
+---@diagnostic disable: lowercase-global
+
 config = {
     KEY_NEW = "m",
     KEY_CANCEL = "rmb",
