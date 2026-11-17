@@ -340,8 +340,6 @@ end
 
 function server.mark(sm, r, g, b)
     for i=1, #sm do
-        
-        
         MarkBuffer.MarkSettings = {
             radius = 0.15,
             red = r,

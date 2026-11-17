@@ -39,10 +39,13 @@ function iMeasurement(i, type, label)
                     measurements[i].hidden = not measurements[i].hidden
                 end
 
-                -- UiTranslate(25)
-                -- if UiImageButton(image) then
-                --     -- mark
-                -- end
+                UiTranslate(25/scale) -- marking
+                if UiImageButton("/media/button_mark.png") then
+                    local sm = {measurements[i]}
+                    ServerCall("server.mark", sm, slider_red_value, slider_green_value, slider_blue_value)
+                    -- DebugPrint(slider_red_value)
+                    -- DebugPrint(measurements[i])
+                end
 
                 -- UiTranslate(25)
                 -- if UiImageButton(image) then
