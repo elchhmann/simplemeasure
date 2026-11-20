@@ -1,5 +1,5 @@
 
-#include "Luva/Engine/Security/SecuredObject/securedGetSet.lua"
+import "Luva.Engine.Security.SecuredObject.securedGetSet"    ---@diagnostic disable-line : assign-type-mismatch # Intelisense not working
 
 _LUVA.Errors.TRIED_TO_CALL_OBJECT = "Tried to call object. Override the operator in it's type or ensure that you have used multi-setter correctly"
 

@@ -1,5 +1,5 @@
 
-#include "Luva/Engine/Security/luvatemplatetype.lua"
+import "Luva.Engine.Security.luvatemplatetype"
 
 ---@type metatable
 _LUVA.SecuredObject.Metatables.TemplateClass = {

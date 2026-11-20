@@ -1,14 +1,12 @@
----@diagnostic disable : exp-in-action
----@diagnostic disable : lowercase-global
----@diagnostic disable : exp-in-action
 
-#include "Luva/Engine/Security/SecuredObject.lua"
-#include "Luva/Engine/OOP/Ingredients/prototype.lua"
-#include "Luva/Engine/OOP/Ingredients/Generics/template.lua"
-#include "Luva/Engine/OOP/Ingredients/Constructors/base.lua"
-#include "Luva/Engine/OOP/Ingredients/Constructors/default.lua"
-#include "Luva/Engine/OOP/Ingredients/Constructors/custom.lua"
-#include "Luva/Engine/OOP/Ingredients/Memory/destructor.lua"
+
+---@diagnostic disable : lowercase-global
+
+import "Luva.Engine.Security.SecuredObject"
+import "Luva.Engine.OOP.Ingredients.prototype"
+import "Luva.Engine.OOP.Ingredients.template"
+import "Luva.Engine.OOP.Ingredients.constructor"
+import "Luva.Engine.OOP.Ingredients.destructor"
 
 ---@alias Luva.Lang.PropNames "prototype"|"default"|"constructor"|"destructor"|"static"|"const"|"template"|"extends"|"implements"|"static_assert"
 ---@alias Luva.Lang.PropFuncNames "AddConstant"|"AddField"|"AddMethod"|"AddAccessor"

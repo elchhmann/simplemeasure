@@ -23,10 +23,11 @@
 #include "scripts/colorPresets.lua"
 #include "scripts/displayPresets.lua"
 
-#include "Luva/Engine/OOP/class.lua"
+-- dofile luva
 
 
-
+ListKeys()
+HasFile()
 
 maxDist = 1000
 

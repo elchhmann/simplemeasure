@@ -1,6 +1,6 @@
 
 
-#include "Luva/Engine/Security/SecuredObject/securedGetSet.lua"
+import "Luva.Engine.Security.SecuredObject.securedGetSet"
 
 
 ---@type metatable

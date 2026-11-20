@@ -1,7 +1,7 @@
 
 ---@diagnostic disable : lowercase-global
 
-#include "Luva/Engine/MatchingExpressions/matchingBase.lua"
+import "Luva.Engine.MatchingExpressions.matchingBase"
 
 
 --- Executes a function based on `value`

@@ -1,5 +1,5 @@
 
-#include "Luva/base.lua"
+
 _LUVA.Errors.INJECTION_FAILED_DUPLICATE = "Failed to inject: duplicate fields (SafeInject)"
 
 

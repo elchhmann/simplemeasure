@@ -1,9 +1,8 @@
----@diagnostic disable : exp-in-action
----@diagnostic disable : undefined-global
+
 ---@diagnostic disable : lowercase-global
 
-#include "Luva/Engine/utils.lua"
-#include "Luva/Engine/Security/SecuredObject/SecuredObjectMetatables.lua"
+import "Luva.Engine.utils"
+import "Luva.Engine.Security.SecuredObject.SecuredObjectMetatables"
 
 
 do
