@@ -1,7 +1,5 @@
 
-
-
-_LUVA.Config = {
+Config = {
     --- Requires Luva to check each time for type-to-type compitability
     --- It slowers the execution, but ensures that you will code faster
     --- (no miss-assigned types etc.) <br />
@@ -16,15 +14,25 @@ _LUVA.Config = {
 
             --- How Luva should search for your mod
             ---@type Luva.Lang.Config.Teardown.FetchMethodEnum
-            FetchMethod = "distinct_file",
+            FetchMethod = "mod_id",
 
             --- Value for FetchMethod
             ---@type string
-            ModID = "",
+            ModID = "3817465845",
 
             --- Value for FetchMethod
             ---@type string
             DistinctFileName = "",
+            
+            --- For debugging if you don't want to publish your work.
+            --- Enter here the name of your local mod, if you don't want to use LocalFilePath
+            ---@type string
+            ModNameForLocal = "simplemeasure",
+
+            --- For debugging if you don't want to publish your work.
+            --- Enter here the absolute path of your local mod
+            ---@type string
+            LocalFilePath = ""
         },
     },
 }

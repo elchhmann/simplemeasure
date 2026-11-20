@@ -6,6 +6,8 @@
 
 #include "Luva/base.lua"
 
+import "Luva.Engine.OOP.class"
+
 #include "scripts/renderMeasurements.lua"
 #include "scripts/renderLabels.lua"
 #include "scripts/mark.lua"
@@ -23,12 +25,6 @@
 #include "scripts/indexOf.lua"
 #include "scripts/colorPresets.lua"
 #include "scripts/displayPresets.lua"
-
--- dofile()
-
-
-ListKeys()
-HasFile()
 
 maxDist = 1000
 
@@ -74,7 +70,6 @@ function client.init()
 end
 
 function client.tick() -- Measurement math etc
-
     origin = GetCameraTransform().pos -- Position of the camera
     cameraDirection = TransformToParentVec(GetCameraTransform(), Vec(0, 0, -1)) -- Direction the camera is facing
     raycast, dist = QueryRaycast(origin, cameraDirection, maxDist) -- Raycast from the camera

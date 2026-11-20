@@ -36,7 +36,7 @@ _LUVA = {
 ---@param prefix string
 local function _TD_searchForModId(teardown, prefix)
     for _, v in pairs(ListKeys(prefix)) do
-        if HasFile("RAW:" .. GetString(prefix .. '.' .. v .. ".path") .. teardown.DistinctFileName) then
+        if HasFile("RAW:" .. GetString(prefix .. '.' .. v .. ".path") .. '/' .. teardown.DistinctFileName) then
             teardown.ModID = v
             return
         end
@@ -54,7 +54,7 @@ end
 
 
 
-local teardown = _LUVA.Config.Environments.Teardown
+local teardown = Config.Environments.Teardown
 local fetchMethod = teardown.FetchMethod
 local prefix = "mods.available"
 
@@ -65,7 +65,7 @@ elseif fetchMethod == "mod_id" then
 end
 
 ---@diagnostic disable-next-line : undefined-global
-local _importPrefix = GetString(prefix .. teardown.ModID .. ".path")
+local _importPrefix = GetString(prefix .. '.' .. teardown.ModID .. ".path") .. '/'
 
 
 --- Imports the file with module saving.
@@ -74,14 +74,37 @@ local _importPrefix = GetString(prefix .. teardown.ModID .. ".path")
 --- If you want to re-import or import locals, use `dofile`.
 ---@param path Luva.Path Full path in `FolderA.folderB.luaFile` format, without `.lua` extension
 import = function (path)
-    path = _importPrefix .. path
+    local newPath = _importPrefix .. path
 
-    if _LUVA.Modules[path] then
+    if _LUVA.Modules[newPath] then
         return
     end
 
-    _LUVA.Modules[path] = true
+    _LUVA.Modules[newPath] = true
 
-    path = path:gsub("%.", "/") .. ".lua"
-    dofile (path)
+    newPath = newPath:gsub("%.", "/") .. ".lua"
+
+    local success = pcall(dofile, newPath)
+
+    if not success then
+
+        if teardown.LocalFilePath == "" then
+            if teardown.ModNameForLocal == "" then
+                error ("Config.LocalFilePath nor Config.ModNameForLocal haven't been provided - cannot import a module: " .. path)
+            end
+
+            teardown.LocalFilePath = GetString(prefix .. ".local-" .. teardown.ModNameForLocal .. ".path")
+        end
+
+        local debugPath = teardown.LocalFilePath .. '/'
+        local finalPath = debugPath .. path:gsub("%.", "/") .. ".lua"
+        if _LUVA.Modules[finalPath] then
+            return
+        end
+    
+        _LUVA.Modules[finalPath] = true
+        -- warn("дэбуговане симплэ мэасурэ - шукане локалнэй вэрсйи мода")
+        dofile (finalPath)
+    end
+
 end
