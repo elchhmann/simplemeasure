@@ -4,6 +4,7 @@
 ---@diagnostic disable : lowercase-global
 ---@diagnostic disable : exp-in-action
 
+
 #include "scripts/renderMeasurements.lua"
 #include "scripts/renderLabels.lua"
 #include "scripts/mark.lua"
@@ -21,6 +22,11 @@
 #include "scripts/indexOf.lua"
 #include "scripts/colorPresets.lua"
 #include "scripts/displayPresets.lua"
+
+#include "Luva/Engine/OOP/class.lua"
+
+
+
 
 maxDist = 1000
 
@@ -58,6 +64,7 @@ function GET_NULL_MEASUREMENT()
     }
 end
 
+
 function client.init()
     slider_red = 1 * 255
     slider_green = 0.698 * 255
@@ -65,7 +72,7 @@ function client.init()
 end
 
 function client.tick() -- Measurement math etc
-    
+
     origin = GetCameraTransform().pos -- Position of the camera
     cameraDirection = TransformToParentVec(GetCameraTransform(), Vec(0, 0, -1)) -- Direction the camera is facing
     raycast, dist = QueryRaycast(origin, cameraDirection, maxDist) -- Raycast from the camera
@@ -73,17 +80,19 @@ function client.tick() -- Measurement math etc
     hitPositionRaw = hitPosition
     
 
-    if #measurements > 0 and closestPoint(measurements, hitPositionRaw) ~= nil and not config.disable_snapping then
-        hitPositionSnapped = closestPoint(measurements, hitPositionRaw)
-    else
-        hitPositionSnapped = Vec(round(hitPosition[1],1), round(hitPosition[2],1), round(hitPosition[3],1))
-    end
+    
 
     if InputPressed(config.KEY_MENU) then
         menu = not menu
     end
 
     if InputDown(config.KEY_SNAP) and VecLength(GetPlayerVelocity()) < 0.1 and not config.hide_measurements then
+        if #measurements > 0 and closestPoint(measurements, hitPositionRaw) ~= nil and not config.disable_snapping then
+            hitPositionSnapped = closestPoint(measurements, hitPositionRaw)
+        else
+            hitPositionSnapped = Vec(round(hitPosition[1],1), round(hitPosition[2],1), round(hitPosition[3],1))
+        end
+
         hitPosition = hitPositionSnapped
         DebugCross(hitPosition, 0, 0, 255, 1)
     end
