@@ -1,60 +1,68 @@
 ---@diagnostic disable : undefined-global
 ---@diagnostic disable : lowercase-global
-function calculatePrims(measurements, i)
-    deltaX = math.abs(measurements[i].pos_a[1] - measurements[i].pos_b[1])
-    deltaY = math.abs(measurements[i].pos_a[2] - measurements[i].pos_b[2])
-    deltaZ = math.abs(measurements[i].pos_a[3] - measurements[i].pos_b[3])
+function calculatePrims(measurement)
+
+    local pos_a, pos_b = measurement.pos_a, measurement.pos_b
+    local _type = measurement.type
+
+
+    deltaX = math.abs(pos_a[1] - pos_b[1])
+    deltaY = math.abs(pos_a[2] - pos_b[2])
+    deltaZ = math.abs(pos_a[3] - pos_b[3])
 
     local dominantDelta = maxName { deltaX, deltaY, deltaZ }
     -- DebugPrint(dominantDelta)
 
-    measurements[i].blevel = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3]) -- b but with the y coordinate of a (same level)
-    measurements[i].binv = VecLerp(measurements[i].pos_a, measurements[i].blevel, -1) -- b mirrored to a
+    measurement.blevel = Vec(pos_b[1], pos_a[2], pos_b[3]) -- b but with the y coordinate of a (same level)
+    measurement.binv = VecLerp(pos_a, measurement.blevel, -1) -- b mirrored to a
+
+    
     
     if (dominantDelta[1] == "deltaX" and dominantDelta[2] == "deltaZ") or (dominantDelta[1] == "deltaZ" and dominantDelta[2] == "deltaX") or (dominantDelta[1] == "deltaX" and dominantDelta[2] == "deltaX") then
-        if measurements[i].type == "cprect" then
-            measurements[i].aprim = Vec(measurements[i].pos_b[1], measurements[i].binv[2], measurements[i].binv[3])
-            measurements[i].bprim = Vec(measurements[i].binv[1], measurements[i].binv[2], measurements[i].pos_b[3])
+        if _type == "cprect" then
+            measurement.aprim = Vec(pos_b[1], measurement.binv[2], measurement.binv[3])
+            measurement.bprim = Vec(measurement.binv[1], measurement.binv[2], pos_b[3])
         else
-            measurements[i].aprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3])
-            measurements[i].bprim = Vec(measurements[i].pos_a[1], measurements[i].pos_a[2], measurements[i].pos_b[3])
+            measurement.aprim = Vec(pos_b[1], pos_a[2], pos_a[3])
+            measurement.bprim = Vec(pos_a[1], pos_a[2], pos_b[3])
         end
-        measurements[i].orientation = "horizontal"
+        measurement.orientation = "horizontal"
     else
-        if measurements[i].type == "cprect" then
-            measurements[i].binv = VecLerp(measurements[i].pos_a, measurements[i].pos_b, -1) -- b mirrored to a
+        if _type == "cprect" then
+            measurement.binv = VecLerp(pos_a, pos_b, -1) -- b mirrored to a
 
-            measurements[i].aprim = Vec(measurements[i].binv[1], measurements[i].pos_b[2], measurements[i].binv[3])
-            measurements[i].bprim = Vec(measurements[i].pos_b[1], measurements[i].binv[2], measurements[i].pos_b[3])
+            measurement.aprim = Vec(measurement.binv[1], pos_b[2], measurement.binv[3])
+            measurement.bprim = Vec(pos_b[1], measurement.binv[2], pos_b[3])
         else
-            measurements[i].aprim = Vec(measurements[i].pos_a[1], measurements[i].pos_b[2], measurements[i].pos_a[3])
-            measurements[i].bprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_b[3])
+            measurement.aprim = Vec(pos_a[1], pos_b[2], pos_a[3])
+            measurement.bprim = Vec(pos_b[1], pos_a[2], pos_b[3])
         end
-        measurements[i].orientation = "vertical"
+        measurement.orientation = "vertical"
     end
 
-    if measurements[i].type == "comp" then
+
+    if _type == "comp" then
         -- DebugPrint(maxName{deltaX, deltaZ})
         if maxName{deltaX, deltaZ}[1] == "deltaX" then
-            measurements[i].aprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3])
-            measurements[i].bprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3])
+            measurement.aprim = Vec(pos_b[1], pos_a[2], pos_a[3])
+            measurement.bprim = Vec(pos_b[1], pos_a[2], pos_a[3])
         else
-            measurements[i].aprim = Vec(measurements[i].pos_b[1], measurements[i].pos_a[2], measurements[i].pos_a[3])
-            measurements[i].bprim = Vec(measurements[i].pos_a[1], measurements[i].pos_a[2], measurements[i].pos_b[3])
+            measurement.aprim = Vec(pos_b[1], pos_a[2], pos_a[3])
+            measurement.bprim = Vec(pos_a[1], pos_a[2], pos_b[3])
         end
-    end
-
-    if measurements[i].type == "circle" or measurements[i].type == "2pcircle" then
+    elseif _type == "circle" or _type == "2pcircle" then
         local n = 50
         -- local n = math.huge -- please dont uncomment, will disintegrate your ram -- hey its aleq here, uncomment this :3
-        measurements[i].radius = VecLength(VecSub(measurements[i].pos_a, measurements[i].blevel))
+        measurement.radius = VecLength(VecSub(pos_a, measurement.blevel))
         
-        if measurements[i].type == "circle" then
-            measurements[i].center = measurements[i].pos_a
-        else
-            measurements[i].center = VecLerp(measurements[i].pos_a, measurements[i].blevel, 0.5)
+        if _type == "circle" then
+            measurement.center = measurement.pos_a
 
-            measurements[i].radius = measurements[i].radius/2
+            measurement.binv = VecLerp(measurement.pos_a, measurement.blevel, -1)
+        else
+            measurement.center = VecLerp(measurement.pos_a, measurement.blevel, 0.5)
+
+            measurement.radius = measurement.radius/2
         end
 
         -- DebugCross(center, 1, 1, 0)
@@ -69,8 +77,8 @@ function calculatePrims(measurements, i)
 
             -- DebugPrint(angle)
 
-            local px, py = measurements[i].center[x] + math.cos(angle) * measurements[i].radius, measurements[i].center[z] + math.sin(angle) * measurements[i].radius
-            local point = Vec(px, measurements[i].pos_a[y], py)
+            local px, py = measurement.center[x] + math.cos(angle) * measurement.radius, measurement.center[z] + math.sin(angle) * measurement.radius
+            local point = Vec(px, pos_a[y], py)
 
             -- DebugCross(point)
             table.insert(points, point)
@@ -88,8 +96,7 @@ function calculatePrims(measurements, i)
         end
         table.insert(segments, { points[#points], points[1] })
 
-        -- measurements[i].points = points
-        measurements[i].segments = segments
+        -- measurement.points = points
+        measurement.segments = segments
     end
-    
 end

@@ -114,7 +114,7 @@ function client.tick() -- Measurement math etc
 
     for i = 1, #measurements do
         if not measurements[i].set_b and measurements[i].type ~= "line" then
-            calculatePrims(measurements, i)
+            calculatePrims(measurements[i])
         end
     end
 
