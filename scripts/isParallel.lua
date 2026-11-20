@@ -1,21 +1,13 @@
 ---@diagnostic disable : lowercase-global
 
-function isParallel(a, b, i)
+function isParallel(a, b)
     local x = 1
     local y = 2
     local z = 3
     
     if a[y] == b[y] then
-        if (a[x] == b[x]) or (a[z] == b[z]) then
-            return true
-        else
-            return false
-        end
+        return (a[x] == b[x]) or (a[z] == b[z])
     else
-        if (a[x] == b[x]) and (a[z] == b[z]) then
-            return true
-        else
-            return false
-        end
+        return (a[x] == b[x]) and (a[z] == b[z])
     end
 end

@@ -1,35 +1,32 @@
 ---@diagnostic disable : undefined-global
 ---@diagnostic disable : lowercase-global
 
+local insert = table.insert
+
 function addMeasurement(hitPosition)
-    if dist < maxDist then
-        if #measurements == 0 then -- If there are no measurements, create the first one
-            table.insert(measurements, GET_NULL_MEASUREMENT())
-        end
+    if dist >= maxDist then
+        return
+    end
+    
+    if #measurements == 0 then -- If there are no measurements, create the first one
+        insert(measurements, GET_NULL_MEASUREMENT())
+    end
+    
+    local last = measurements[#measurements]
+    
+    if last.set_b then -- Create a new measurement
+        insert(measurements, GET_NULL_MEASUREMENT())
+        last = measurements[#measurements]
+    end
 
-        if measurements[#measurements].set_b then -- Create a new measurement
-                table.insert(measurements, GET_NULL_MEASUREMENT())
-        end
-
-        if measurements[#measurements].type == "point" then
-            measurements[#measurements].pos_a = hitPosition
-            measurements[#measurements].pos_b = hitPosition
-            measurements[#measurements].set_a = true
-            measurements[#measurements].set_b = true
-            measurements[#measurements].length = VecLength(VecSub(measurements[#measurements].pos_a, measurements[#measurements].pos_b))
-        else
-            
-
-            if not measurements[#measurements].set_b and measurements[#measurements].set_a then -- Second point of the measurement; create a new one
-                measurements[#measurements].pos_b = hitPosition
-                measurements[#measurements].set_b = true
-                measurements[#measurements].length = VecLength(VecSub(measurements[#measurements].pos_a, measurements[#measurements].pos_b))
-            end
-
-            if not measurements[#measurements].set_a then -- First point of the measurement
-                measurements[#measurements].pos_a = hitPosition
-                measurements[#measurements].set_a = true
-            end
-        end
+    if not last.set_b and last.set_a then -- Second point of the measurement; create a new one
+        last.pos_b = hitPosition
+        last.set_b = true
+        last.length = VecLength(VecSub(last.pos_a, last.pos_b))
+    end
+    
+    if not last.set_a then -- First point of the measurement
+        last.pos_a = hitPosition
+        last.set_a = true
     end
 end

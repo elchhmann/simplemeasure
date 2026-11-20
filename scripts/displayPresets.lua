@@ -7,7 +7,7 @@ function displayPresets()
     local x = 40 -- size of the buttons
     local y = x * 1.5 -- spacing
 
-    for k, v in ipairs(colorPreset) do
+    for _, v in ipairs(colorPreset) do
         if i % 3 == 0 then
             UiTranslate(-3 * y, y)
         end

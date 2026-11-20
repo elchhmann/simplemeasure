@@ -75,9 +75,7 @@ function client.tick() -- Measurement math etc
     raycast, dist = QueryRaycast(origin, cameraDirection, maxDist) -- Raycast from the camera
     hitPosition = VecAdd(origin, VecScale(cameraDirection, dist)) -- Position where the raycast hits
     hitPositionRaw = hitPosition
-    
 
-    
 
     if InputPressed(config.KEY_MENU) then
         menu = not menu

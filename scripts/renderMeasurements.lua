@@ -13,8 +13,8 @@ local function fpoint(measurement)
     DebugCross(measurement.pos_a, 0, 1, 0, 1)
 end
 
-local function fline(measurement, color, i, completed, opacity)
-    local color = isParallel(measurements[i].pos_a, measurements[i].pos_b, i) and (completed and {1, 0, 0} or {0, 1, 0}) or {1, 0, 0}
+local function fline(measurement, color, completed, opacity)
+    local color = isParallel(measurement.pos_a, measurement.pos_b) and (completed and {1, 0, 0} or {0, 1, 0}) or {1, 0, 0}
     DebugLine(measurement.pos_a, measurement.pos_b, color[1], color[2], color[3], opacity)
 
     DebugCross(measurement.pos_a, 0, 1, 0, 1)
@@ -99,7 +99,7 @@ local function fcprect(measurement, color, opacity)
 end
 
 local function fcircle(measurement, opacity, completed)
-    local color = isParallel(measurement.binv, measurement.blevel, i) and (completed and {1, 1, 1} or {0, 1, 0}) or {1, 1, 1}
+    local color = isParallel(measurement.binv, measurement.blevel) and (completed and {1, 1, 1} or {0, 1, 0}) or {1, 1, 1}
 
     DebugCross(measurement.binv, 0, 1, 0, 1)
     DebugCross(measurement.center, 1, 1, 1, 1)
@@ -116,7 +116,7 @@ end
 
 
 local function f2pcircle(measurement, opacity, completed)
-    local color = isParallel(measurement.pos_a, measurement.blevel, i) and (completed and {1, 1, 1} or {0, 1, 0}) or {1, 1, 1}
+    local color = isParallel(measurement.pos_a, measurement.blevel) and (completed and {1, 1, 1} or {0, 1, 0}) or {1, 1, 1}
 
     DebugCross(measurement.pos_a, 0, 1, 0, 1)
     DebugCross(measurement.blevel, 0, 0, 1)
@@ -167,7 +167,7 @@ function renderMeasurements(completed, i)
         end,
 
         ["line"] = function ()
-            fline(measurement, color, i, completed, opacity)
+            fline(measurement, color, completed, opacity)
         end,
 
         ["rect"] = function ()

@@ -3,14 +3,13 @@
 
 
 
-
 function mark(a, b, blevel, aprim, bprim, binv, type, orientation, radius, red, green, blue, iterations, segments)
-
+    
     -- DebugPrint("Makrela")
-
+    
     -- DebugPrint(_G.type(radius))
     -- DebugPrint(radius)
-
+    
     if type == "circle" or type == "2pcircle" then
         -- DebugPrint("Circle Makrela")
         for index, segment in ipairs(segments) do
@@ -19,38 +18,45 @@ function mark(a, b, blevel, aprim, bprim, binv, type, orientation, radius, red, 
             m.pos_b = segment[2]
             m.iterations = iterations
             m.segments = segments
-
+            
             MarkBuffer:Add(m, iterations, nil)
         end
-
+        
         return
     end
-
+    
     if type == "comp" then
         local compoundPoints = {a, bprim, blevel, b}
-
+        
         for i = 1, 3  do
             local m = GET_NULL_MEASUREMENT()
             m.pos_a = compoundPoints[i]
             m.pos_b = compoundPoints[i + 1]
             m.iterations = iterations
             m.segments = compoundPoints
-
+            
             MarkBuffer:Add(m, iterations, nil)
         end
-
+        
         return
     end
-
+    
     -- DebugPrint(_G.type(iterations))
+    
+    local spot, vel
+    local life = 1
+    
+    local function _paint()
+        PaintRGBA(spot, radius, red, green, blue)
+        ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
+    end
+  
 
     for i=1, iterations do
         local spacing = i/iterations
 
-        local vel = Vec(0,0,0)
-        local life = 1
+        vel = Vec(0,0,0)
 
-        local spot
 
         -- DebugPrint(type)
 
@@ -62,45 +68,36 @@ function mark(a, b, blevel, aprim, bprim, binv, type, orientation, radius, red, 
 
         if type == "line" then
             spot = VecLerp(a, b, spacing)
-            PaintRGBA(spot, radius, red, green, blue)
+            _paint()
             -- DebugCross(spot)
         end
 
         if type == "rect" then
-
             spot = VecLerp(a, aprim, spacing)
-            PaintRGBA(spot, radius, red, green, blue)
-            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
+            _paint()
 
             spot = VecLerp(a, bprim, spacing)
-            PaintRGBA(spot, radius, red, green, blue)
-            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
+            _paint()
 
             spot = VecLerp(orientB, aprim, spacing)
-            PaintRGBA(spot, radius, red, green, blue)
-            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
+            _paint()
 
             spot = VecLerp(orientB, bprim, spacing)
-            PaintRGBA(spot, radius, red, green, blue)
-            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
+            _paint()
         end
 
         if type == "cprect" then -- cp stands for center point *
             spot = VecLerp(binv, aprim, spacing)
-            PaintRGBA(spot, radius, red, green, blue)
-            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
+            _paint()
 
             spot = VecLerp(binv, bprim, spacing)
-            PaintRGBA(spot, radius, red, green, blue)
-            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
+            _paint()
 
             spot = VecLerp(orientB, aprim, spacing)
-            PaintRGBA(spot, radius, red, green, blue)
-            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
-
+            _paint()
+        
             spot = VecLerp(orientB, bprim, spacing)
-            PaintRGBA(spot, radius, red, green, blue)
-            ClientCall(0, "client.particle", spot, vel, life, red, green, blue)
+            _paint()
         end
 
         ClientCall(0, "client.fx", spot, vel, life, red, green, blue)

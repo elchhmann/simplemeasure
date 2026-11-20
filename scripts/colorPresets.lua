@@ -1,8 +1,8 @@
 ---@diagnostic disable: lowercase-global
 
-colorPreset = 
+colorPreset =
 {
-    {1, 0.698, 0.098},
+    {1, .698, .098},
     {1, 0, 0},
     {0, 1, 0},
     {0, 0, 1},

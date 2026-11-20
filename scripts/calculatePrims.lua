@@ -1,14 +1,19 @@
 ---@diagnostic disable : undefined-global
 ---@diagnostic disable : lowercase-global
+
+local abs, sin, cos, PI = math.abs, math.sin, math.cos, math.pi
+local insert = table.insert
+
+
 function calculatePrims(measurement)
 
     local pos_a, pos_b = measurement.pos_a, measurement.pos_b
     local _type = measurement.type
 
 
-    deltaX = math.abs(pos_a[1] - pos_b[1])
-    deltaY = math.abs(pos_a[2] - pos_b[2])
-    deltaZ = math.abs(pos_a[3] - pos_b[3])
+    deltaX = abs(pos_a[1] - pos_b[1])
+    deltaY = abs(pos_a[2] - pos_b[2])
+    deltaZ = abs(pos_a[3] - pos_b[3])
 
     local dominantDelta = maxName { deltaX, deltaY, deltaZ }
     -- DebugPrint(dominantDelta)
@@ -73,11 +78,11 @@ function calculatePrims(measurement)
         -- DebugPrint(radius)
         for j=1, n do
             
-            angle = j * (2*math.pi/n)
+            angle = j * (2*PI/n)
 
             -- DebugPrint(angle)
 
-            local px, py = measurement.center[x] + math.cos(angle) * measurement.radius, measurement.center[z] + math.sin(angle) * measurement.radius
+            local px, py = measurement.center[x] + cos(angle) * measurement.radius, measurement.center[z] + sin(angle) * measurement.radius
             local point = Vec(px, pos_a[y], py)
 
             -- DebugCross(point)
@@ -89,12 +94,12 @@ function calculatePrims(measurement)
         local segments = { }
 
         for i = 2, #points do
-            table.insert(
+            insert(
                 segments,
                 { points[i - 1], points[i] }
             )
         end
-        table.insert(segments, { points[#points], points[1] })
+        insert(segments, { points[#points], points[1] })
 
         -- measurement.points = points
         measurement.segments = segments

@@ -1,6 +1,5 @@
 ---@diagnostic disable : undefined-global
 ---@diagnostic disable : lowercase-global
----@diagnostic disable : exp-in-action
 
 function button(row, column, filepath, text, text2, action)
     UiPush()
