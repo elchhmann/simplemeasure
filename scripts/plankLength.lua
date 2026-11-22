@@ -2,13 +2,10 @@
 ---@diagnostic disable: undefined-global
 
 
-function plankLength() -- Credits to @lOcIEe for this script
+function plankLength() -- Credits to @lOcIEe
     local tool = GetString("game.player.tool")
 
     local plank_length
-
-    local plank_maxDist = 3 -- Max distance of the raycast for planks
-
 
     if tool == "plank" and not menu and config.enable_plank_length then
         local cameraTransform = GetPlayerEyeTransform()
@@ -39,21 +36,11 @@ function plankLength() -- Credits to @lOcIEe for this script
             -- DebugWatch('plank hitPos2', hitPos)
             -- DrawLine(client.plankHitPos, hitPos, 1, 0, 0, 1)
 
-            plank_length = math.max(math.floor(VecLength(VecSub(client.plankHitPos, hitPos)) * 10 / 2 + 0.5) * 2, 0)
+            plank_length = math.min(math.floor(VecLength(VecSub(client.plankHitPos, hitPos)) * 10 / 2 + 0.5) * 2, 40)
             
             if plank_length <= GetInt("game.tool.plank.length") then
                 return plank_length, plank_length / 10
             end
-        else
-            plank_origin_set = false
-            return
         end
     end
-    
-    -- DebugWatch("set", plank_origin_set)
-    -- DebugPrint(tool)
-
-    
-    
-    
 end
