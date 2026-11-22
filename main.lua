@@ -230,7 +230,7 @@ function client.draw() -- Rendering
                 setting(4, "Hide particles", "hide_particles")
                 setting(5, "Mute sounds", "mute_sounds")
                 setting(6, "Disable snapping to existing points", "disable_snapping")
-                setting(7, "Show plank length [EXPERIMENTAL]", "enable_plank_length")
+                setting(7, "Show plank length", "enable_plank_length")
                 -- setting(3, "Mark diagonals", "mark_diag")
                 -- setting(4, "Mark points", "mark_points")
             UiPop()
