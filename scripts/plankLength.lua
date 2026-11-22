@@ -2,64 +2,44 @@
 ---@diagnostic disable: undefined-global
 
 
-function plankLength() -- EXPERIMENTAL
+function plankLength() -- Credits to @lOcIEe for this script
     local tool = GetString("game.player.tool")
 
-    local plank_raycast
-    local plank_dist
-    local plank_end
     local plank_length
 
     local plank_maxDist = 3 -- Max distance of the raycast for planks
-    local plank_multiplier = 1.5 -- when the end of the plank is x times further than the start point
-
-    local plank_origin_set = false
-
 
 
     if tool == "plank" and not menu and config.enable_plank_length then
-        plank_raycast, plank_dist = QueryRaycast(origin, cameraDirection, plank_maxDist)
+        local cameraTransform = GetPlayerEyeTransform()
+        local origin = cameraTransform.pos
+        local forward = TransformToParentVec(cameraTransform, Vec(0, 0, -1))
 
-        if InputDown("lmb") and plank_dist < plank_maxDist then
-            if InputPressed("lmb") then
-                if plank_origin_set == false then
-                    plank_origin = VecAdd(origin, VecScale(cameraDirection, plank_dist))
-                    plank_origin_set = true
+        local hit, dist, _, shape = QueryRaycast(origin, forward, 3)
+        local hitPos
 
-                    plank_dist_static = plank_dist
-                    -- DebugWatch("static dist", plank_dist_static)
-                    -- DebugPrint("true")
-                    -- DebugPrint(plank_origin)
-                end
+        if InputPressed("lmb") then
+            local hit, dist, _, shape = QueryRaycast(origin, forward, 3)
+
+            if hit then
+                local hitPos = VecAdd(origin, VecScale(forward, dist))
+                client.plankHitPos = hitPos
+                client.plankDist1 = dist
             end
+        elseif InputDown("lmb") and dist < maxDist then
             
-            -- if plank_dist > plank_dist_static * 1.5 then
-            --     DebugPrint("switch behavior at" .. plank_dist / plank_dist_static)
-            -- else
-            --     DebugPrint("standard behavior at " .. plank_dist / plank_dist_static)
-            -- end
-
-            -- plank_raycast, plank_dist = QueryRaycast(origin, cameraDirection, plank_dist)
-            
-            plank_end = VecAdd(origin, VecScale(cameraDirection, plank_dist))
-
-            if plank_raycast then
-                plank_end = VecAdd(origin, VecScale(cameraDirection, plank_dist))
+            -- DebugWatch('plank dist', client.plankDist1)
+            -- DebugWatch('plank hitPos1', client.plankHitPos)
+            if hit then
+                hitPos = VecAdd(origin, VecScale(forward, dist))
+                DrawShapeOutline(shape, 1, 0, 0, 1)
             else
-                plank_end = VecAdd(origin, VecScale(cameraDirection, plank_dist_static))
+                hitPos = VecAdd(origin, VecScale(forward, client.plankDist1))
             end
+            -- DebugWatch('plank hitPos2', hitPos)
+            -- DrawLine(client.plankHitPos, hitPos, 1, 0, 0, 1)
 
-
-            -- DebugPrint(plank_origin)
-
-            plank_length = math.floor(VecLength(VecSub(plank_origin, plank_end)) * 10 / 2 + 0.5) * 2
-            
-            -- DebugWatch("plank_length", plank_length)
-            -- DebugWatch("plank_origin", plank_origin)
-            -- DebugWatch("dynamic dist", plank_dist)
-            
-            -- DebugCross(plank_origin)
-            -- DebugCross(plank_end)
+            plank_length = math.max(math.floor(VecLength(VecSub(client.plankHitPos, hitPos)) * 10 / 2 + 0.5) * 2, 0)
             
             if plank_length <= GetInt("game.tool.plank.length") then
                 return plank_length, plank_length / 10
