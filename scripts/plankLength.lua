@@ -29,7 +29,7 @@ function plankLength() -- Credits to @lOcIEe
             -- DebugWatch('plank hitPos1', client.plankHitPos)
             if hit then
                 hitPos = VecAdd(origin, VecScale(forward, dist))
-                DrawShapeOutline(shape, 1, 0, 0, 1)
+                -- DrawShapeOutline(shape, 1, 0, 0, 1)
             else
                 hitPos = VecAdd(origin, VecScale(forward, client.plankDist1))
             end
