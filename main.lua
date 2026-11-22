@@ -21,6 +21,7 @@
 #include "scripts/indexOf.lua"
 #include "scripts/colorPresets.lua"
 #include "scripts/displayPresets.lua"
+#include "scripts/plankLength.lua"
 
 maxDist = 1000
 
@@ -65,13 +66,12 @@ function client.init()
 end
 
 function client.tick() -- Measurement math etc
-    
     origin = GetCameraTransform().pos -- Position of the camera
     cameraDirection = TransformToParentVec(GetCameraTransform(), Vec(0, 0, -1)) -- Direction the camera is facing
     raycast, dist = QueryRaycast(origin, cameraDirection, maxDist) -- Raycast from the camera
     hitPosition = VecAdd(origin, VecScale(cameraDirection, dist)) -- Position where the raycast hits
     hitPositionRaw = hitPosition
-    
+
 
     if #measurements > 0 and closestPoint(measurements, hitPositionRaw) ~= nil and not config.disable_snapping then
         hitPositionSnapped = closestPoint(measurements, hitPositionRaw)
@@ -113,6 +113,11 @@ function client.tick() -- Measurement math etc
     end
 
     -- DebugCross(closestPoint(measurements, hitPositionRaw))
+
+    -- plankLength()
+
+    -- DebugPrint(dist)
+    -- DebugWatch("dist", dist)
 end
 
 function client.draw() -- Rendering
@@ -122,6 +127,22 @@ function client.draw() -- Rendering
             renderLabels(i)
         end
     end
+
+    UiPush()
+        UiFont("bold.ttf", 24)
+        UiTranslate(UiCenter(), UiMiddle() + 30)
+        UiAlign("center middle")
+        UiColor(1, 1, 1, 1)
+        UiTextOutline(0, 0 ,0 ,5)
+        if plankLength() ~= nil then
+            textVox, textM = plankLength()
+
+
+            UiText(textVox .. " voxels")
+            UiTranslate(0, 20)
+            UiText(textM .. " m")
+        end
+    UiPop()
 
     if menu then
         UiMakeInteractive()
@@ -209,6 +230,7 @@ function client.draw() -- Rendering
                 setting(4, "Hide particles", "hide_particles")
                 setting(5, "Mute sounds", "mute_sounds")
                 setting(6, "Disable snapping to existing points", "disable_snapping")
+                setting(7, "Show plank length [EXPERIMENTAL]", "enable_plank_length")
                 -- setting(3, "Mark diagonals", "mark_diag")
                 -- setting(4, "Mark points", "mark_points")
             UiPop()

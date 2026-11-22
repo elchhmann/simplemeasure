@@ -29,6 +29,8 @@ config = {
     mute_sounds = false,
 
     disable_snapping = false,
+
+    enable_plank_length = false,
 }
 
 config.MENU_WIDTH = config.HORI_BUTTONS * config.BUTTON_SIZE + (config.HORI_BUTTONS+1) * config.BUTTON_SPACING_HORIZONTAL
