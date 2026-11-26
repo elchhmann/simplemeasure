@@ -1,101 +1,131 @@
+
 ---@diagnostic disable : undefined-global
 ---@diagnostic disable : lowercase-global
 
+import "Luva.Engine.matching_expr"
+
+
+local function getSide(a, b)
+    return round(VecLength(VecSub(a, b)), 2)
+end
+
+local format = string.format
+
+local function getLength(x)
+    return format("%.2f m", x)
+end
+
+local function getSize(x, y)
+    return format("%.2f m x %.2f m", x, y)
+end
+
+local function forCircle(measurement)
+    uiX, uiY, UIdist = UiWorldToPixel(measurement.center)
+    measurement.label = getLength(measurement.radius * 2)
+end
+
+
+local function getCompoundMiddle(compoundPoints, j)
+    return UiWorldToPixel(VecLerp(compoundPoints[j], compoundPoints[j + 1], 0.5))
+end
+
+
 function renderLabels(i)
-    if not measurements[i].set_b then
-        if measurements[i].type == "cprect" then
-            measurements[i].dimensionx = round(VecLength(VecSub(measurements[i].binv, measurements[i].bprim)), 2)
-            measurements[i].dimensiony = round(VecLength(VecSub(measurements[i].binv, measurements[i].aprim)), 2)
+    local measurement = measurements[i]
+
+    local set_b, blevel = measurement.set_b, measurement.blevel
+    local _type, bprim, length = measurement.type, measurement.bprim, measurement.length
+    local pos_a, pos_b = measurement.pos_a, measurement.pos_b
+    
+    if not set_b then
+        local aprim, thePoint = measurement.aprim, nil
+
+        if _type == "cprect" then
+            thePoint = measurement.binv
         else
-            measurements[i].dimensionx = round(VecLength(VecSub(measurements[i].pos_a, measurements[i].bprim)), 2)
-            measurements[i].dimensiony = round(VecLength(VecSub(measurements[i].pos_a, measurements[i].aprim)), 2)
+            thePoint = pos_a
         end
-    end
-        
-    if measurements[i].type == "cprect" then
-        uiX, uiY, UIdist = UiWorldToPixel(measurements[i].pos_a) -- Get the position of the text in the middle of the line [for cprect or circle]
-    else
-        uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5)) -- Get the position of the text in the middle of the line
+
+        measurement.dimensionx = getSide(thePoint, bprim)
+        measurement.dimensiony = getSide(thePoint, aprim)
     end
 
-    if measurements[i].type == "2pcircle" or measurements[i].type == "circle" then
-        uiX, uiY, UIdist = UiWorldToPixel(measurements[i].center)
-    end
+    switch (_type, {
+        ["line"] = function ()
+            uiX, uiY, UIdist = UiWorldToPixel(VecLerp(pos_a, pos_b, 0.5)) -- Get the position of the text in the middle of the line
+            measurement.label = getLength(length)
+        end,
 
-    if measurements[i].type == "rect" then
-        if measurements[i].orientation == "horizontal" then
-            uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].blevel, 0.5)) -- Get the position of the text in the middle of the line
-        else
-            uiX, uiY, UIdist = UiWorldToPixel(VecLerp(measurements[i].pos_a, measurements[i].pos_b, 0.5))
-        end
-    end
+        ["rect"] = function ()
+            if measurement.orientation == "horizontal" then
+                uiX, uiY, UIdist = UiWorldToPixel(VecLerp(pos_a, blevel, 0.5)) -- Get the position of the text in the middle of the line
+            else
+                uiX, uiY, UIdist = UiWorldToPixel(VecLerp(pos_a, pos_b, 0.5))
+            end
 
-    if measurements[i].type == "line" then
-        measurements[i].label = string.format("%.2f m", measurements[i].length)
-    end
+            measurement.label = getSize(measurement.dimensionx, measurement.dimensiony)
+        end,
 
-    -- DebugPrint(measurements[i].type)
-    if measurements[i].type == "rect" or measurements[i].type == "cprect" then
-        measurements[i].label = string.format("%.2f m x %.2f m", measurements[i].dimensionx, measurements[i].dimensiony)
-    end
+        ["cprect"] = function ()
+            uiX, uiY, UIdist = UiWorldToPixel(pos_a) -- Get the position of the text in the middle of the line [for cprect or circle]
+            measurement.label = getSize(measurement.dimensionx, measurement.dimensiony)
+        end,
 
-    if measurements[i].type == "circle" or measurements[i].type == "2pcircle" then
-        measurements[i].label = string.format("%.2f m", measurements[i].radius * 2)
-    end
+        ["circle"] = function ()
+            forCircle(measurement)
+        end,
 
-    local compoundPoints = {measurements[i].pos_a, measurements[i].bprim, measurements[i].blevel, measurements[i].pos_b}
+        ["2pcircle"] = function ()
+            forCircle(measurement)
+        end,
 
-    local compoundUIx = {}
-    local compoundUIy = {}
-    local compoundUIdist = {}
+        default = function () end
+    })
 
-    -- measurements[i].label = string.format("%.2f m", measurements[i].length)
+    local compoundPoints = { pos_a, bprim, blevel, pos_b }
+
+    -- measurement.label = string.format("%.2f m", measurement.length)
 
     local showindex = config.show_index and (i .. ": " .. " ") or ("")
 
     UiPush()
-
         UiFont("bold.ttf", 24)
         UiAlign("center middle")
 
-        if measurements[i].set_b then
-            UiColor(1,1,1,1)
-            UiTextOutline(0,0,0,5)
+        if set_b then
+            UiColor(1, 1, 1, 1)
+            UiTextOutline(0, 0, 0, 5)
+        else
+            UiColor(1, 1, 1, 0.3)
         end
 
-        if not measurements[i].set_b then
-            UiColor(1,1,1,0.3)
+        local isValid = UIdist > 0 and measurement.set_a and length < maxDist and _type ~= "comp"
+        local shouldOccur = (not set_b and dist < maxDist) or set_b
+
+        if isValid and shouldOccur then
+            UiTranslate(uiX, uiY - 15)
+            UiText(showindex .. measurement.label)
         end
 
-        if UIdist > 0 and measurements[i].set_a and measurements[i].length < maxDist and measurements[i].type ~= "comp" then -- Measurement length label
-            if (not measurements[i].set_b and dist < maxDist) or measurements[i].set_b then
-                UiTranslate(uiX, uiY-15)
-                UiText(showindex .. measurements[i].label)
-            end
-        end
-
-        if measurements[i].type == "comp" then
+        if _type == "comp" then
             for j = 1, 3 do
-                DebugCross(VecLerp(compoundPoints[j], compoundPoints[j+1], 0.5))
+                DebugCross(VecLerp(compoundPoints[j], compoundPoints[j + 1], 0.5))
 
-                compoundUIx[j] = select(1, UiWorldToPixel(VecLerp(compoundPoints[j], compoundPoints[j+1], 0.5)))
-                compoundUIy[j] = select(2, UiWorldToPixel(VecLerp(compoundPoints[j], compoundPoints[j+1], 0.5)))
-                compoundUIdist[j] = select(3, UiWorldToPixel(VecLerp(compoundPoints[j], compoundPoints[j+1], 0.5)))
+                -- compoundUIx[j], compoundUIy[j], compoundUIdist[j] = getCompoundMiddle(compoundPoints, j)
+                local compoundUIx, compoundUIy, compoundUIdist = getCompoundMiddle(compoundPoints, j)
 
-                if compoundUIdist[j] > 0 then
-                    UiTranslate(compoundUIx[j], compoundUIy[j]-15)
+                if compoundUIdist > 0 then
+                    UiTranslate(compoundUIx, compoundUIy - 15)
 
                     -- DebugPrint("a: " .. tostring(points[j]) .. " b: " .. tostring(points[j+1]))
 
-                    local lengthCompound = VecLength(VecSub(compoundPoints[j], compoundPoints[j+1]))
+                    local lengthCompound = VecLength(VecSub(compoundPoints[j], compoundPoints[j + 1]))
 
-                    measurements[i].label = string.format("%.2f m", lengthCompound)
+                    measurement.label = getLength(lengthCompound)
 
-                    UiText(showindex .. measurements[i].label)
+                    UiText(showindex .. measurement.label)
                 end
             end
         end
     UiPop()
-
-    
 end

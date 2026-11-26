@@ -67,6 +67,9 @@ function client.init()
     slider_red = 1 * 255
     slider_green = 0.698 * 255
     slider_blue = 0.098 * 255
+
+    local x = Color(1, 2, 3)
+    DebugPrint(type(x.R))
 end
 
 function client.tick() -- Measurement math etc
